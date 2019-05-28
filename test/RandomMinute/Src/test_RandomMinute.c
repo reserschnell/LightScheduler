@@ -6,10 +6,9 @@
 #include "RandomMinute.h"
 #include "RandomMinute_PBcfg.h"
 #include "stdlib.h"
-#include "stdio.h"
 
 
-
+#define TEST_RANDOMMINUTE_NUMBER_OF_ELEMENTS (RANDOMMINUTE_BOUND*2+1)
 
 void setUp(void)
 {
@@ -38,23 +37,15 @@ void test_RandomMinute_GetIsInRange(void)
 void test_RandomMinute_AllValuesPossible(void)
 {
    sint16 Minute;
-   const sint16 SizeOfErrorCntr = (sint16)(RandomMinuteConfig.Bound*2 +1);
-   sint16 ErrorCntr = 0;
-   sint16 ResultCntr[RANDOMMINUTE_BOUND*2 +1] = {0};
+   BOOL ValuePossible[TEST_RANDOMMINUTE_NUMBER_OF_ELEMENTS] = {FALSE};
    sint16 i;
 
    for (i = 0; i < 300; i++)
    {
       Minute = RandomMinute_Get();
       TEST_ASSERT_INT16_WITHIN((sint16)RandomMinuteConfig.Bound, 0, Minute);
-      ResultCntr[Minute + (sint16)RandomMinuteConfig.Bound]++;
+      ValuePossible[Minute + (sint16)RandomMinuteConfig.Bound] = TRUE;
    }
-   for (i = 0; i < SizeOfErrorCntr; i++)
-   {
-      if (ResultCntr[i] == 0)
-      {
-         ErrorCntr++;
-      }
-   }
-   TEST_ASSERT_EQUAL_INT16(0, ErrorCntr);
+
+   TEST_ASSERT_EACH_EQUAL_INT(TRUE, ValuePossible, TEST_RANDOMMINUTE_NUMBER_OF_ELEMENTS);
 }
