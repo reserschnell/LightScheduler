@@ -73,25 +73,11 @@
                         					
                     </folderInfo>
                     					
-                    <folderInfo id="cdt.managedbuild.toolchain.gnu.base.561235720.4969293" name="/" resourcePath="build">
+                    <sourceEntries>
                         						
-                        <toolChain id="cdt.managedbuild.toolchain.gnu.base.662310536" name="Linux GCC" superClass="cdt.managedbuild.toolchain.gnu.base" unusedChildren="">
-                            							
-                            <tool id="cdt.managedbuild.tool.gnu.archiver.base.1293621899" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base.575247272"/>
-                            							
-                            <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.288585838" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base.812766157"/>
-                            							
-                            <tool id="cdt.managedbuild.tool.gnu.c.compiler.base.1748375148" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base.122528479"/>
-                            							
-                            <tool id="cdt.managedbuild.tool.gnu.c.linker.base.1653290053" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base.515601095"/>
-                            							
-                            <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.33747819" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base.1164394755"/>
-                            							
-                            <tool id="cdt.managedbuild.tool.gnu.assembler.base.1127447496" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.base.1236624305"/>
-                            						
-                        </toolChain>
+                        <entry excluding="src/TimeService|TimeService" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
                         					
-                    </folderInfo>
+                    </sourceEntries>
                     				
                 </configuration>
                 			
