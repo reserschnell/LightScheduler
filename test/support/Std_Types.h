@@ -18,7 +18,7 @@ typedef int BOOL;
 #define TRUE 1
 #define FALSE 0
 
-typedef enum Std_ReturnType_Tag
+typedef enum
 {
    E_NOT_OK = -1,
    E_OK

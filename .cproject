@@ -73,9 +73,29 @@
                         					
                     </folderInfo>
                     					
+                    <folderInfo id="cdt.managedbuild.toolchain.gnu.base.561235720.2002977975" name="/" resourcePath="src/TimeService">
+                        						
+                        <toolChain id="cdt.managedbuild.toolchain.gnu.base.28050853" name="Linux GCC" superClass="cdt.managedbuild.toolchain.gnu.base" unusedChildren="">
+                            							
+                            <tool id="cdt.managedbuild.tool.gnu.archiver.base.1824564075" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base.575247272"/>
+                            							
+                            <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.896729615" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base.812766157"/>
+                            							
+                            <tool id="cdt.managedbuild.tool.gnu.c.compiler.base.1492205627" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base.122528479"/>
+                            							
+                            <tool id="cdt.managedbuild.tool.gnu.c.linker.base.333743210" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base.515601095"/>
+                            							
+                            <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.1614145485" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base.1164394755"/>
+                            							
+                            <tool id="cdt.managedbuild.tool.gnu.assembler.base.690429592" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.base.1236624305"/>
+                            						
+                        </toolChain>
+                        					
+                    </folderInfo>
+                    					
                     <sourceEntries>
                         						
-                        <entry excluding="src/TimeService|TimeService" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+                        <entry excluding="TimeService" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
                         					
                     </sourceEntries>
                     				

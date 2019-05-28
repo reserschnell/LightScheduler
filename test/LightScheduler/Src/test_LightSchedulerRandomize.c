@@ -10,7 +10,6 @@
 #include "LightController_PBcfg.h"
 
 TEST_FILE("TimeService.c")
-TEST_FILE("LightController_DriverSpy.c")
 TEST_FILE("LightController.c")
 
 static LightController_DriverSpyEventType Expected;
