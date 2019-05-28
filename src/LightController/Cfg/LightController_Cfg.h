@@ -1,0 +1,27 @@
+/*
+ * LightScheduler_Cfg.h
+ *
+ *  Created on: Nov 18, 2018
+ *      Author: reser
+ */
+
+#ifndef LIGHTCONTROLLER_CFG_H_
+#define LIGHTCONTROLLER_CFG_H_
+
+#include "Std_Types.h"
+
+typedef enum LightController_IdType_tag
+{
+   LIGHTCONTROLLER_ID_UNKNOWN = -1,
+
+   LIGHTCONTROLLER_BATHROOM,
+   LIGHTCONTROLLER_LIVINGROOM,
+   LIGHTCONTROLLER_KITCHEN,
+   LIGHTCONTROLLER_BEDROOM,
+   LIGHTCONTROLLER_CHILD1,
+   LIGHTCONTROLLER_CHILD2,
+
+   LIGHTCONTROLLER_ID_MAX
+} LightController_IdType;
+
+#endif /* LIGHTCONTROLLER_CFG_H_ */
