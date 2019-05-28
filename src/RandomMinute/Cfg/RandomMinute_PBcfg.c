@@ -12,5 +12,5 @@
 
 RandomMinuteConfigType const RandomMinuteConfig =
 {
-   30
+   RANDOMMINUTE_BOUND
 };

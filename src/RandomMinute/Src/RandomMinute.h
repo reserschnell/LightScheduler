@@ -11,7 +11,7 @@
 #include "Std_Types.h"
 
 
-typedef struct RandomMinuteConfigType_Tag
+typedef struct
 {
    uint16 Bound;
 }RandomMinuteConfigType;

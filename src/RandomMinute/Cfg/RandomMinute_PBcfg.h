@@ -12,6 +12,8 @@
 #include "Std_Types.h"
 #include "RandomMinute.h"
 
+#define RANDOMMINUTE_BOUND 30
+
 
 extern RandomMinuteConfigType const RandomMinuteConfig;
 
