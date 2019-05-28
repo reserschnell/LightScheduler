@@ -10,7 +10,7 @@
 
 #include "Std_Types.h"
 
-typedef enum TimeService_DayType_tag
+typedef enum
 {
       TIMESERVICE_MONDAY = 0,
       TIMESERVICE_TUESDAY,
@@ -22,7 +22,7 @@ typedef enum TimeService_DayType_tag
 } TimeService_DayType;
 
 
-typedef struct TimeService_Time_tag
+typedef struct
 {
    TimeService_DayType Day;
    uint16 Minute;
