@@ -5,10 +5,11 @@
 #include "LightScheduler_PBcfg.h"
 #include "LightScheduler.h"
 #include "LightController_PBcfg.h"
-#include "TimeService_Fake.h"
 #include "RandomMinute_PBcfg.h"
 #include "RandomMinute.h"
 #include "LightController_DriverSpy.h"
+#include "TimeService_Os_Mock.h"
+#include "mock_TimeService_Os.h"
 
 
 TEST_FILE("LightController.c")
@@ -19,17 +20,17 @@ TEST_FILE("TimeService.c")
 
 void setUp(void)
 {
-   
    LightScheduler_Test_SetUp();
 }
 
 void tearDown(void)
 {
+   LightScheduler_Test_CheckDefault();
 }
 
 void test_LightScheduler_NoChangesToLightDuringInitialization(void)
 {
-   LightScheduler_Test_CheckEvent(&Default, 0);
+   //Implicitly checked in tearDown
 }
 
 void test_LightScheduler_RememberTheLastLightIdControlled(void)
@@ -38,14 +39,11 @@ void test_LightScheduler_RememberTheLastLightIdControlled(void)
 
    Expected.Id = LIGHTCONTROLLER_BATHROOM;
    LightScheduler_Test_CheckEvent(&Expected, 0);
-   LightScheduler_Test_CheckEvent(&Default, 1);
 }
 
 void test_LightScheduler_NoScheduleNotingHappens(void)
 {
-   TimeService_Fake_RunUntil(TIMESERVICE_MONDAY, 100);
-
-   LightScheduler_Test_CheckEvent(&Default, 0);
+   LightScheduler_Test_RunUntil(TIMESERVICE_MONDAY, 100);
 }
 
 void test_LightScheduler_ScheduleOnEveryNotTimeYet(void)
@@ -57,9 +55,7 @@ void test_LightScheduler_ScheduleOnEveryNotTimeYet(void)
          LIGHTSCHEDULER_EVERYDAY,
          MinuteToTest);
 
-   TimeService_Fake_RunUntil(TIMESERVICE_MONDAY, MinuteToTest);
-
-   LightScheduler_Test_CheckEvent(&Default, 0);
+   LightScheduler_Test_RunUntil(TIMESERVICE_MONDAY, MinuteToTest);
 }
 
 void test_LightScheduler_ScheduleOnEverydayItsTime(void)
@@ -71,7 +67,7 @@ void test_LightScheduler_ScheduleOnEverydayItsTime(void)
          LIGHTSCHEDULER_EVERYDAY,
          MinuteToTest);
 
-   TimeService_Fake_RunUntil(TIMESERVICE_TUESDAY, MinuteToTest + 1);
+   LightScheduler_Test_RunUntil(TIMESERVICE_TUESDAY, MinuteToTest + 1);
 
    Expected.Id = LIGHTCONTROLLER_BEDROOM;
    Expected.Time.Day = TIMESERVICE_MONDAY;
@@ -80,8 +76,6 @@ void test_LightScheduler_ScheduleOnEverydayItsTime(void)
 
    Expected.Time.Day = TIMESERVICE_TUESDAY;
    LightScheduler_Test_CheckEvent(&Expected, 1);
-
-   LightScheduler_Test_CheckEvent(&Default, 2);
 }
 
 void test_LightScheduler_ScheduleOffEverydayItsTime(void)
@@ -95,7 +89,7 @@ void test_LightScheduler_ScheduleOffEverydayItsTime(void)
          MinuteToTest);
    LightScheduler_TurnOff(SchedulePtr);
 
-   TimeService_Fake_RunUntil(TIMESERVICE_TUESDAY, MinuteToTest + 1);
+   LightScheduler_Test_RunUntil(TIMESERVICE_TUESDAY, MinuteToTest + 1);
 
    Expected.Id = LIGHTCONTROLLER_BEDROOM;
    Expected.State = LIGHTCONTROLLER_STATE_OFF;
@@ -105,8 +99,6 @@ void test_LightScheduler_ScheduleOffEverydayItsTime(void)
 
    Expected.Time.Day = TIMESERVICE_TUESDAY;
    LightScheduler_Test_CheckEvent(&Expected, 1);
-
-   LightScheduler_Test_CheckEvent(&Default, 2);
 }
 
 void test_LightScheduler_ScheduleTuesdayButItsMonday(void)
@@ -118,9 +110,7 @@ void test_LightScheduler_ScheduleTuesdayButItsMonday(void)
          LIGHTSCHEDULER_TUESDAY,
          MinuteToTest);
 
-   TimeService_Fake_RunUntil(TIMESERVICE_TUESDAY, MinuteToTest);
-
-   LightScheduler_Test_CheckEvent(&Default, 0);
+   LightScheduler_Test_RunUntil(TIMESERVICE_TUESDAY, MinuteToTest);
 }
 
 void test_LightScheduler_ScheduleTuesdayAndItsTuesday(void)
@@ -132,14 +122,13 @@ void test_LightScheduler_ScheduleTuesdayAndItsTuesday(void)
          LIGHTSCHEDULER_TUESDAY,
          MinuteToTest);
 
-   TimeService_Fake_RunUntil(TIMESERVICE_TUESDAY, MinuteToTest + 1);
+   LightScheduler_Test_RunUntil(TIMESERVICE_TUESDAY, MinuteToTest + 1);
 
    Expected.Id = LIGHTCONTROLLER_BEDROOM;
    Expected.State = LIGHTCONTROLLER_STATE_ON;
    Expected.Time.Day = TIMESERVICE_TUESDAY;
    Expected.Time.Minute = MinuteToTest;
    LightScheduler_Test_CheckEvent(&Expected, 0);
-   LightScheduler_Test_CheckEvent(&Default, 1);
 }
 
 void test_LightScheduler_ScheduleWeekendAndItsWeekday(void)
@@ -151,9 +140,7 @@ void test_LightScheduler_ScheduleWeekendAndItsWeekday(void)
          LIGHTSCHEDULER_WEEKEND,
          MinuteToTest);
 
-   TimeService_Fake_RunUntil(TIMESERVICE_SATURDAY, MinuteToTest);
-
-   LightScheduler_Test_CheckEvent(&Default, 0);
+   LightScheduler_Test_RunUntil(TIMESERVICE_SATURDAY, MinuteToTest);
 }
 
 void test_LightScheduler_ScheduleWeekendAndItsWeekend(void)
@@ -165,7 +152,7 @@ void test_LightScheduler_ScheduleWeekendAndItsWeekend(void)
          LIGHTSCHEDULER_WEEKEND,
          MinuteToTest);
 
-   TimeService_Fake_RunUntil(TIMESERVICE_SUNDAY, MinuteToTest + 1);
+   LightScheduler_Test_RunUntil(TIMESERVICE_SUNDAY, MinuteToTest + 1);
 
    Expected.Id = LIGHTCONTROLLER_CHILD2;
    Expected.State = LIGHTCONTROLLER_STATE_ON;
@@ -175,24 +162,20 @@ void test_LightScheduler_ScheduleWeekendAndItsWeekend(void)
 
    Expected.Time.Day = TIMESERVICE_SUNDAY;
    LightScheduler_Test_CheckEvent(&Expected, 1);
-
-   LightScheduler_Test_CheckEvent(&Default, 2);
 }
 
 void test_LightScheduler_ScheduleWeekdayAndItsWeekend(void)
 {
    uint16 const MinuteToTest = 800;
 
-   TimeService_Fake_SetStartTime(TIMESERVICE_FRIDAY, MinuteToTest);
+   TimeService_Os_Mock_SetTime(TIMESERVICE_FRIDAY, MinuteToTest);
 
    LightScheduler_Create(
          LIGHTCONTROLLER_BEDROOM,
          LIGHTSCHEDULER_WEEKDAY,
          MinuteToTest);
 
-   TimeService_Fake_RunUntil(TIMESERVICE_MONDAY, MinuteToTest);
-
-   LightScheduler_Test_CheckEvent(&Default, 0);
+   LightScheduler_Test_RunUntil(TIMESERVICE_MONDAY, MinuteToTest);
 }
 
 
@@ -205,7 +188,7 @@ void test_LightScheduler_ScheduleWeekdayAndItsWeekday(void)
          LIGHTSCHEDULER_WEEKDAY,
          MinuteToTest);
 
-   TimeService_Fake_RunUntil(TIMESERVICE_TUESDAY, MinuteToTest + 1);
+   LightScheduler_Test_RunUntil(TIMESERVICE_TUESDAY, MinuteToTest + 1);
 
    Expected.Id = LIGHTCONTROLLER_BEDROOM;
    Expected.Time.Day = TIMESERVICE_MONDAY;
@@ -214,8 +197,6 @@ void test_LightScheduler_ScheduleWeekdayAndItsWeekday(void)
 
    Expected.Time.Day = TIMESERVICE_TUESDAY;
    LightScheduler_Test_CheckEvent(&Expected, 1);
-
-   LightScheduler_Test_CheckEvent(&Default, 2);
 }
 
 void test_LightScheduler_ScheduleTwoEventsAtTheSameTime(void)
@@ -232,7 +213,7 @@ void test_LightScheduler_ScheduleTwoEventsAtTheSameTime(void)
          LIGHTSCHEDULER_WEDNESDAY,
          MinuteToTest);
 
-   TimeService_Fake_RunUntil(TIMESERVICE_WEDNESDAY, MinuteToTest + 1);
+   LightScheduler_Test_RunUntil(TIMESERVICE_WEDNESDAY, MinuteToTest + 1);
 
    Expected.Id = LIGHTCONTROLLER_BEDROOM;
    Expected.State = LIGHTCONTROLLER_STATE_ON;
@@ -242,8 +223,6 @@ void test_LightScheduler_ScheduleTwoEventsAtTheSameTime(void)
 
    Expected.Id = LIGHTCONTROLLER_BATHROOM;
    LightScheduler_Test_CheckEvent(&Expected, 1);
-
-   LightScheduler_Test_CheckEvent(&Default, 2);
 }
 
 void test_LightScheduler_RejectTooManyEvents(void)
@@ -333,14 +312,12 @@ void test_LightScheduler_RemoveMultipleScheduledEvents(void)
 
    LightScheduler_Remove(BedroomPtr);
 
-   TimeService_Fake_RunUntil(TIMESERVICE_WEDNESDAY, MinuteToTest + 1);
+   LightScheduler_Test_RunUntil(TIMESERVICE_WEDNESDAY, MinuteToTest + 1);
 
    Expected.Id = LIGHTCONTROLLER_KITCHEN;
    Expected.State = LIGHTCONTROLLER_STATE_ON;
    Expected.Time.Day = TIMESERVICE_WEDNESDAY;
    Expected.Time.Minute = MinuteToTest;
    LightScheduler_Test_CheckEvent(&Expected, 0);
-
-   LightScheduler_Test_CheckEvent(&Default, 1);
 }
 

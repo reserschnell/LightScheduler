@@ -6,10 +6,11 @@
 #include "LightScheduler_PBcfg.h"
 #include "LightScheduler.h"
 #include "LightController_PBcfg.h"
-#include "TimeService_Fake.h"
 #include "RandomMinute_PBcfg.h"
 #include "RandomMinute.h"
 #include "LightController_DriverSpy.h"
+#include "TimeService_Os_Mock.h"
+#include "mock_TimeService_Os.h"
 
 
 TEST_FILE("LightController.c")
@@ -37,6 +38,7 @@ void setUp(void)
 
 void tearDown(void)
 {
+   LightScheduler_Test_CheckDefault();
 }
 
 
@@ -51,7 +53,7 @@ void test_LightSchedulerRandomize_TurnsOnEarly(void)
                MinuteToTest);
    LightScheduler_Randomize(BedroomPtr);
 
-   TimeService_Fake_RunUntil(TIMESERVICE_WEDNESDAY, MinuteToTest + 1);
+   LightScheduler_Test_RunUntil(TIMESERVICE_WEDNESDAY, MinuteToTest + 1);
 
    Expected.Id = LIGHTCONTROLLER_BEDROOM;
    Expected.State = LIGHTCONTROLLER_STATE_ON;
@@ -66,8 +68,6 @@ void test_LightSchedulerRandomize_TurnsOnEarly(void)
    Expected.Time.Day = TIMESERVICE_WEDNESDAY;
    Expected.Time.Minute = MinuteToTest;
    LightScheduler_Test_CheckEvent(&Expected, 2);
-
-   LightScheduler_Test_CheckEvent(&Default, 3);
 }
 
 void test_LightSchedulerRandomize_TurnsOnOnlyOnceADayDecrementTime(void)
@@ -80,7 +80,7 @@ void test_LightSchedulerRandomize_TurnsOnOnlyOnceADayDecrementTime(void)
          LIGHTCONTROLLER_BEDROOM, LIGHTSCHEDULER_EVERYDAY, MinuteToTest);
    LightScheduler_Randomize(BedroomPtr);
 
-   TimeService_Fake_RunUntil(TIMESERVICE_WEDNESDAY, MinuteToTest - 10 + 1);
+   LightScheduler_Test_RunUntil(TIMESERVICE_WEDNESDAY, MinuteToTest - 10 + 1);
 
    Expected.Id = LIGHTCONTROLLER_BEDROOM;
    Expected.State = LIGHTCONTROLLER_STATE_ON;
@@ -95,8 +95,6 @@ void test_LightSchedulerRandomize_TurnsOnOnlyOnceADayDecrementTime(void)
    Expected.Time.Day = TIMESERVICE_WEDNESDAY;
    Expected.Time.Minute = MinuteToTest - 10;
    LightScheduler_Test_CheckEvent(&Expected, 2);
-
-   LightScheduler_Test_CheckEvent(&Default, 3);
 }
 
 void test_LightSchedulerRandomize_TurnsOnOnlyOnceADayIncrementTime(void)
@@ -110,7 +108,7 @@ void test_LightSchedulerRandomize_TurnsOnOnlyOnceADayIncrementTime(void)
          LIGHTCONTROLLER_BEDROOM, LIGHTSCHEDULER_EVERYDAY, MinuteToTest);
    LightScheduler_Randomize(BedroomPtr);
 
-   TimeService_Fake_RunUntil(TIMESERVICE_WEDNESDAY, MinuteToTest + 11);
+   LightScheduler_Test_RunUntil(TIMESERVICE_WEDNESDAY, MinuteToTest + 11);
 
    Expected.Id = LIGHTCONTROLLER_BEDROOM;
    Expected.State = LIGHTCONTROLLER_STATE_ON;
@@ -125,8 +123,6 @@ void test_LightSchedulerRandomize_TurnsOnOnlyOnceADayIncrementTime(void)
    Expected.Time.Day = TIMESERVICE_WEDNESDAY;
    Expected.Time.Minute = MinuteToTest + 10;
    LightScheduler_Test_CheckEvent(&Expected, 2);
-
-   LightScheduler_Test_CheckEvent(&Default, 3);
 }
 
 void test_LightSchedulerRandomize_RandomizeAtMidnight(void)
@@ -139,7 +135,7 @@ void test_LightSchedulerRandomize_RandomizeAtMidnight(void)
          LIGHTCONTROLLER_BEDROOM, LIGHTSCHEDULER_EVERYDAY, MinuteToTest);
    LightScheduler_Randomize(BedroomPtr);
 
-   TimeService_Fake_RunUntil(TIMESERVICE_THURSDAY, 10);
+   LightScheduler_Test_RunUntil(TIMESERVICE_THURSDAY, 10);
 
    Expected.Id = LIGHTCONTROLLER_BEDROOM;
    Expected.State = LIGHTCONTROLLER_STATE_ON;
@@ -154,7 +150,5 @@ void test_LightSchedulerRandomize_RandomizeAtMidnight(void)
    Expected.Time.Day = TIMESERVICE_THURSDAY;
    Expected.Time.Minute = 9;
    LightScheduler_Test_CheckEvent(&Expected, 2);
-
-   LightScheduler_Test_CheckEvent(&Default, 3);
 }
 

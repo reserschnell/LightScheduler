@@ -34,7 +34,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1559025160561</id>
+			<id>1559107285511</id>
 			<name>build/test</name>
 			<type>9</type>
 			<matcher>
@@ -43,12 +43,21 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1559025160573</id>
+			<id>1559107285516</id>
 			<name>build/test</name>
 			<type>9</type>
 			<matcher>
 				<id>org.eclipse.ui.ide.multiFilter</id>
 				<arguments>1.0-name-matches-false-false-mocks</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1559107285523</id>
+			<name>build/test</name>
+			<type>9</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-out</arguments>
 			</matcher>
 		</filter>
 	</filteredResources>

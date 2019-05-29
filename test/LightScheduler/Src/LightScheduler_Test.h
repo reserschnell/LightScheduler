@@ -13,21 +13,16 @@
 #include "LightController_DriverSpy.h"
 
 
-#define NumberOfEvents 10
-
-extern TimeService_Time StartTime;
-extern TimeService_Time StopTime;
-extern TimeService_Time EventTime[NumberOfEvents];
-extern TimeService_Time ExpectedEventTime[NumberOfEvents];
-
 extern LightController_DriverSpyEventType Expected;
-
-extern LightController_DriverSpyEventType const Default;
 
 
 extern void LightScheduler_Test_SetUp(void);
 
+extern void LightScheduler_Test_RunUntil(TimeService_DayType Day, uint16 Minute);
+
 extern void LightScheduler_Test_CheckEvent(LightController_DriverSpyEventType const * const ExpectedEvent, uint16 NumberGivenEvent);
+
+extern void LightScheduler_Test_CheckDefault(void);
 
 
 #endif /* LIGHTSCHEDULER_TEST_H_ */
