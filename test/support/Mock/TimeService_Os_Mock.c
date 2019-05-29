@@ -35,13 +35,25 @@ TimeService_Time TimeService_Os_Mock_SetTime(TimeService_DayType Day, uint16 Min
    Time->Day = Day;
    Time->Minute = Minute;
 
+   // Experiments to avoid callback
+//   TimeService_Os_GetTime_Expect(NULL_PTR);
+//   TimeService_Os_GetTime_IgnoreArg_Time();
+//   TimeService_Os_GetTime_ReturnThruPtr_Time(Time);
+//   TimeService_Os_GetTime_Ignore();
+
+   TimeService_Os.Time = *Time;
+
    return(*Time);
 }
 
 
 void TimeService_Os_Mock_IncrementTime(void)
 {
+   TimeService_Time Time;
 
-   TimeService_Add(&(TimeService_Os.Time), 0, 1);
+   TimeService_GetTime(&Time);
+   TimeService_Add(&Time, 0, 1);
+
+   TimeService_Os_Mock_SetTime(Time.Day, Time.Minute);
 
 }
