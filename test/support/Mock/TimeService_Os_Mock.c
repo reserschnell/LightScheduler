@@ -36,10 +36,8 @@ TimeService_Time TimeService_Os_Mock_SetTime(TimeService_DayType Day, uint16 Min
    Time->Minute = Minute;
 
    // Experiments to avoid callback
-//   TimeService_Os_GetTime_Expect(NULL_PTR);
-//   TimeService_Os_GetTime_IgnoreArg_Time();
+//   TimeService_Os_GetTime_ExpectAnyArgs();
 //   TimeService_Os_GetTime_ReturnThruPtr_Time(Time);
-//   TimeService_Os_GetTime_Ignore();
 
    TimeService_Os.Time = *Time;
 

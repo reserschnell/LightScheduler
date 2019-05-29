@@ -65,6 +65,7 @@
     - :ignore_arg
     - :return_thru_ptr
     - :callback
+    - :expect_any_args
 
   :treat_as:
     uint8:    HEX8
