@@ -14,7 +14,7 @@
 #include "LightController.h"
 #include "LightScheduler_Cfg.h"
 
-typedef enum LightScheduler_DayType_tag
+typedef enum
 {
       LIGHTSCHEDULER_EVERYDAY = 0,
       LIGHTSCHEDULER_MONDAY,
@@ -28,12 +28,12 @@ typedef enum LightScheduler_DayType_tag
       LIGHTSCHEDULER_WEEKDAY
 } LightScheduler_DayType;
 
-typedef struct LightSchedulerMConfigType_tag
+typedef struct
 {
    sint16 (* GetRandomMinute)(void);
 }LightSchedulerMConfigType;
 
-typedef struct LightSchedulerConfigType_tag
+typedef struct
 {
    LightSchedulerMConfigType const *MCfgPtr;
 }LightSchedulerConfigType;

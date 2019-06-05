@@ -10,7 +10,7 @@
 
 #include "Std_Types.h"
 
-typedef enum LightController_IdType_tag
+typedef enum
 {
    LIGHTCONTROLLER_ID_UNKNOWN = -1,
 

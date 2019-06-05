@@ -22,7 +22,7 @@ struct LightSchedulerDataType_tag
    BOOL IsRandomized;
 };
 
-typedef struct LightSchedulerType_tag
+typedef struct
 {
    LightSchedulerDataType Data[LIGHTSCHEDULER_MAX_EVENTS];
    LightSchedulerMConfigType const * MCfgPtr;

@@ -8,7 +8,7 @@
 #include "Std_Types.h"
 #include "RandomMinute_Fake.h"
 
-typedef struct RandomMinute_FakeType_tag
+typedef struct
 {
    sint16 RandomMinuteStart;
    sint16 RandomMinute;

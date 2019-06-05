@@ -15,20 +15,20 @@
 
 
 
-typedef struct LightController_SpyDataType_tag
+typedef struct
 {
    LightController_DriverSpyEventType Given;
 } LightController_SpyDataType;
 
 
-typedef struct LightController_SpyMDataType_tag
+typedef struct
 {
    uint16 EventCntr;
 } LightController_SpyMDataType;
 
 
 
-typedef struct LightController_SpyType_tag
+typedef struct
 {
    LightController_SpyDataType Data[LIGHTCONTROLLER_SPY_EVENTS];
    LightController_SpyMDataType MData;
