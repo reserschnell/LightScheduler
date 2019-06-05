@@ -38,6 +38,10 @@ typedef struct LightController_SpyType_tag
 
 static LightController_SpyType LightController_Spy;
 
+static void LightController_DriverSpy_On(uint8 DriverId);
+
+static void LightController_DriverSpy_Off(uint8 DriverId);
+
 
 
 void LightController_DriverSpy_Init(LightController_InterfaceType * const Interface,
@@ -84,14 +88,14 @@ static inline void LightController_Spy_lSetEvent(
    }
 }
 
-void LightController_DriverSpy_On(uint8 Id)
+static void LightController_DriverSpy_On(uint8 Id)
 {
 
    LightController_Spy_lSetEvent(Id, LIGHTCONTROLLER_STATE_ON);
 
 }
 
-void LightController_DriverSpy_Off(uint8 Id)
+static void LightController_DriverSpy_Off(uint8 Id)
 {
 
    LightController_Spy_lSetEvent(Id, LIGHTCONTROLLER_STATE_OFF);

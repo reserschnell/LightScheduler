@@ -34,11 +34,6 @@ typedef struct
 extern void LightController_DriverSpy_Init(LightController_InterfaceType * const Interface,
       LightController_DriverSpyConfigType const * const Config);
 
-extern void LightController_DriverSpy_On(uint8 DriverId);
-
-extern void LightController_DriverSpy_Off(uint8 DriverId);
-
-
 extern LightController_DriverSpyEventType LightController_DriverSpy_GetEvent(uint16 EventNumber);
 
 #endif /* LIGHTCONTROLLER_DRIVERSPY_H_ */
