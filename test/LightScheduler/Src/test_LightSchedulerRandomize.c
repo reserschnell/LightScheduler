@@ -38,7 +38,7 @@ void setUp(void)
 
 void tearDown(void)
 {
-   LightScheduler_Test_CheckDefault();
+   LightController_DriverSpy_CheckDefault();
 }
 
 
@@ -59,15 +59,15 @@ void test_LightSchedulerRandomize_TurnsOnEarly(void)
    Expected.State = LIGHTCONTROLLER_STATE_ON;
    Expected.Time.Day = TIMESERVICE_MONDAY;
    Expected.Time.Minute = MinuteToTest - 10;
-   LightScheduler_Test_CheckEvent(&Expected, 0);
+   LightController_DriverSpy_CheckEvent(&Expected, 0);
 
    Expected.Time.Day = TIMESERVICE_TUESDAY;
    Expected.Time.Minute = MinuteToTest - 5;
-   LightScheduler_Test_CheckEvent(&Expected, 1);
+   LightController_DriverSpy_CheckEvent(&Expected, 1);
 
    Expected.Time.Day = TIMESERVICE_WEDNESDAY;
    Expected.Time.Minute = MinuteToTest;
-   LightScheduler_Test_CheckEvent(&Expected, 2);
+   LightController_DriverSpy_CheckEvent(&Expected, 2);
 }
 
 void test_LightSchedulerRandomize_TurnsOnOnlyOnceADayDecrementTime(void)
@@ -86,15 +86,15 @@ void test_LightSchedulerRandomize_TurnsOnOnlyOnceADayDecrementTime(void)
    Expected.State = LIGHTCONTROLLER_STATE_ON;
    Expected.Time.Day = TIMESERVICE_MONDAY;
    Expected.Time.Minute = MinuteToTest + 10;
-   LightScheduler_Test_CheckEvent(&Expected, 0);
+   LightController_DriverSpy_CheckEvent(&Expected, 0);
 
    Expected.Time.Day = TIMESERVICE_TUESDAY;
    Expected.Time.Minute = MinuteToTest;
-   LightScheduler_Test_CheckEvent(&Expected, 1);
+   LightController_DriverSpy_CheckEvent(&Expected, 1);
 
    Expected.Time.Day = TIMESERVICE_WEDNESDAY;
    Expected.Time.Minute = MinuteToTest - 10;
-   LightScheduler_Test_CheckEvent(&Expected, 2);
+   LightController_DriverSpy_CheckEvent(&Expected, 2);
 }
 
 void test_LightSchedulerRandomize_TurnsOnOnlyOnceADayIncrementTime(void)
@@ -114,15 +114,15 @@ void test_LightSchedulerRandomize_TurnsOnOnlyOnceADayIncrementTime(void)
    Expected.State = LIGHTCONTROLLER_STATE_ON;
    Expected.Time.Day = TIMESERVICE_MONDAY;
    Expected.Time.Minute = MinuteToTest - 10;
-   LightScheduler_Test_CheckEvent(&Expected, 0);
+   LightController_DriverSpy_CheckEvent(&Expected, 0);
 
    Expected.Time.Day = TIMESERVICE_TUESDAY;
    Expected.Time.Minute = MinuteToTest;
-   LightScheduler_Test_CheckEvent(&Expected, 1);
+   LightController_DriverSpy_CheckEvent(&Expected, 1);
 
    Expected.Time.Day = TIMESERVICE_WEDNESDAY;
    Expected.Time.Minute = MinuteToTest + 10;
-   LightScheduler_Test_CheckEvent(&Expected, 2);
+   LightController_DriverSpy_CheckEvent(&Expected, 2);
 }
 
 void test_LightSchedulerRandomize_RandomizeAtMidnight(void)
@@ -141,14 +141,14 @@ void test_LightSchedulerRandomize_RandomizeAtMidnight(void)
    Expected.State = LIGHTCONTROLLER_STATE_ON;
    Expected.Time.Day = TIMESERVICE_MONDAY;
    Expected.Time.Minute = MinuteToTest - 10;
-   LightScheduler_Test_CheckEvent(&Expected, 0);
+   LightController_DriverSpy_CheckEvent(&Expected, 0);
 
    Expected.Time.Day = TIMESERVICE_TUESDAY;
    Expected.Time.Minute = MinuteToTest;
-   LightScheduler_Test_CheckEvent(&Expected, 1);
+   LightController_DriverSpy_CheckEvent(&Expected, 1);
 
    Expected.Time.Day = TIMESERVICE_THURSDAY;
    Expected.Time.Minute = 9;
-   LightScheduler_Test_CheckEvent(&Expected, 2);
+   LightController_DriverSpy_CheckEvent(&Expected, 2);
 }
 

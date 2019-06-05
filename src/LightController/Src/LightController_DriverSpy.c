@@ -6,12 +6,26 @@
  */
 
 
+#include "unity.h"
 #include "LightController_DriverSpy.h"
 
 
 
 
 #define LIGHTCONTROLLER_SPY_EVENTS 10
+
+
+LightController_DriverSpyEventType Expected;
+
+static const LightController_DriverSpyEventType Default =
+{
+   LIGHTCONTROLLER_ID_UNKNOWN,
+   LIGHTCONTROLLER_STATE_ON,
+   {
+      TIMESERVICE_MONDAY,
+      0
+   }
+};
 
 
 
@@ -24,6 +38,7 @@ typedef struct
 typedef struct
 {
    uint16 EventCntr;
+   sint32 LastCheckedEvent;
 } LightController_SpyMDataType;
 
 
@@ -52,14 +67,14 @@ void LightController_DriverSpy_Init(LightController_InterfaceType * const Interf
 
    // Initialize spy data
    LightController_Spy.MData.EventCntr = 0;
+   LightController_Spy.MData.LastCheckedEvent = -1;
+
+   Expected = Default;
 
    for (EventCntr = 0; EventCntr < LIGHTCONTROLLER_SPY_EVENTS; EventCntr++)
    {
       DataPtr = &(LightController_Spy.Data[EventCntr]);
-      DataPtr->Given.Id = LIGHTCONTROLLER_ID_UNKNOWN;
-      DataPtr->Given.State = LIGHTCONTROLLER_STATE_ON;
-      DataPtr->Given.Time.Day = TIMESERVICE_MONDAY;
-      DataPtr->Given.Time.Minute = 0;
+      DataPtr->Given = Default;
    }
 
    // Set interface
@@ -102,10 +117,39 @@ static void LightController_DriverSpy_Off(uint8 Id)
 }
 
 
-LightController_DriverSpyEventType LightController_DriverSpy_GetEvent(uint16 EventNumber)
+static LightController_DriverSpyEventType LightController_DriverSpy_GetEvent(uint16 EventNumber)
 {
    return (LightController_Spy.Data[EventNumber].Given);
 }
 
 
+void LightController_DriverSpy_CheckEvent(LightController_DriverSpyEventType const * const ExpectedEvent, uint16 NumberGivenEvent)
+{
+   LightController_DriverSpyEventType Given;
+   Given = LightController_DriverSpy_GetEvent(NumberGivenEvent);
+
+   if (LightController_Spy.MData.LastCheckedEvent < NumberGivenEvent)
+   {
+      LightController_Spy.MData.LastCheckedEvent = NumberGivenEvent;
+   }
+
+   TEST_ASSERT_EQUAL(ExpectedEvent->Id, Given.Id);
+   TEST_ASSERT_EQUAL(ExpectedEvent->State, Given.State);
+   TEST_ASSERT_EQUAL(ExpectedEvent->Time.Day, Given.Time.Day);
+   TEST_ASSERT_EQUAL(ExpectedEvent->Time.Minute, Given.Time.Minute);
+}
+
+void LightController_DriverSpy_CheckDefault(void)
+{
+   uint16 NumberEvent = LightController_Spy.MData.LastCheckedEvent + 1;
+
+   LightController_DriverSpy_CheckEvent(&Default, NumberEvent);
+}
+
+
+
+LightController_DriverSpyEventType LightController_DriverSpy_GetDefault(void)
+{
+   return Default;
+}
 

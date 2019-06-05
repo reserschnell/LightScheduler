@@ -30,10 +30,16 @@ typedef struct
 } LightController_DriverSpyEventType;
 
 
+extern LightController_DriverSpyEventType Expected;
+
 
 extern void LightController_DriverSpy_Init(LightController_InterfaceType * const Interface,
       LightController_DriverSpyConfigType const * const Config);
 
-extern LightController_DriverSpyEventType LightController_DriverSpy_GetEvent(uint16 EventNumber);
+extern void LightController_DriverSpy_CheckEvent(LightController_DriverSpyEventType const * const ExpectedEvent, uint16 NumberGivenEvent);
+
+extern void LightController_DriverSpy_CheckDefault(void);
+
+extern LightController_DriverSpyEventType LightController_DriverSpy_GetDefault(void);
 
 #endif /* LIGHTCONTROLLER_DRIVERSPY_H_ */

@@ -25,20 +25,12 @@ void setUp(void)
 
 void tearDown(void)
 {
-   LightScheduler_Test_CheckDefault();
+   LightController_DriverSpy_CheckDefault();
 }
 
 void test_LightScheduler_NoChangesToLightDuringInitialization(void)
 {
    //Implicitly checked in tearDown
-}
-
-void test_LightScheduler_RememberTheLastLightIdControlled(void)
-{
-   LightController_On(LIGHTCONTROLLER_BATHROOM);
-
-   Expected.Id = LIGHTCONTROLLER_BATHROOM;
-   LightScheduler_Test_CheckEvent(&Expected, 0);
 }
 
 void test_LightScheduler_NoScheduleNotingHappens(void)
@@ -72,10 +64,10 @@ void test_LightScheduler_ScheduleOnEverydayItsTime(void)
    Expected.Id = LIGHTCONTROLLER_BEDROOM;
    Expected.Time.Day = TIMESERVICE_MONDAY;
    Expected.Time.Minute = MinuteToTest;
-   LightScheduler_Test_CheckEvent(&Expected, 0);
+   LightController_DriverSpy_CheckEvent(&Expected, 0);
 
    Expected.Time.Day = TIMESERVICE_TUESDAY;
-   LightScheduler_Test_CheckEvent(&Expected, 1);
+   LightController_DriverSpy_CheckEvent(&Expected, 1);
 }
 
 void test_LightScheduler_ScheduleOffEverydayItsTime(void)
@@ -95,10 +87,10 @@ void test_LightScheduler_ScheduleOffEverydayItsTime(void)
    Expected.State = LIGHTCONTROLLER_STATE_OFF;
    Expected.Time.Day = TIMESERVICE_MONDAY;
    Expected.Time.Minute = MinuteToTest;
-   LightScheduler_Test_CheckEvent(&Expected, 0);
+   LightController_DriverSpy_CheckEvent(&Expected, 0);
 
    Expected.Time.Day = TIMESERVICE_TUESDAY;
-   LightScheduler_Test_CheckEvent(&Expected, 1);
+   LightController_DriverSpy_CheckEvent(&Expected, 1);
 }
 
 void test_LightScheduler_ScheduleTuesdayButItsMonday(void)
@@ -128,7 +120,7 @@ void test_LightScheduler_ScheduleTuesdayAndItsTuesday(void)
    Expected.State = LIGHTCONTROLLER_STATE_ON;
    Expected.Time.Day = TIMESERVICE_TUESDAY;
    Expected.Time.Minute = MinuteToTest;
-   LightScheduler_Test_CheckEvent(&Expected, 0);
+   LightController_DriverSpy_CheckEvent(&Expected, 0);
 }
 
 void test_LightScheduler_ScheduleWeekendAndItsWeekday(void)
@@ -158,10 +150,10 @@ void test_LightScheduler_ScheduleWeekendAndItsWeekend(void)
    Expected.State = LIGHTCONTROLLER_STATE_ON;
    Expected.Time.Day = TIMESERVICE_SATURDAY;
    Expected.Time.Minute = MinuteToTest;
-   LightScheduler_Test_CheckEvent(&Expected, 0);
+   LightController_DriverSpy_CheckEvent(&Expected, 0);
 
    Expected.Time.Day = TIMESERVICE_SUNDAY;
-   LightScheduler_Test_CheckEvent(&Expected, 1);
+   LightController_DriverSpy_CheckEvent(&Expected, 1);
 }
 
 void test_LightScheduler_ScheduleWeekdayAndItsWeekend(void)
@@ -193,10 +185,10 @@ void test_LightScheduler_ScheduleWeekdayAndItsWeekday(void)
    Expected.Id = LIGHTCONTROLLER_BEDROOM;
    Expected.Time.Day = TIMESERVICE_MONDAY;
    Expected.Time.Minute = MinuteToTest;
-   LightScheduler_Test_CheckEvent(&Expected, 0);
+   LightController_DriverSpy_CheckEvent(&Expected, 0);
 
    Expected.Time.Day = TIMESERVICE_TUESDAY;
-   LightScheduler_Test_CheckEvent(&Expected, 1);
+   LightController_DriverSpy_CheckEvent(&Expected, 1);
 }
 
 void test_LightScheduler_ScheduleTwoEventsAtTheSameTime(void)
@@ -219,10 +211,10 @@ void test_LightScheduler_ScheduleTwoEventsAtTheSameTime(void)
    Expected.State = LIGHTCONTROLLER_STATE_ON;
    Expected.Time.Day = TIMESERVICE_WEDNESDAY;
    Expected.Time.Minute = MinuteToTest;
-   LightScheduler_Test_CheckEvent(&Expected, 0);
+   LightController_DriverSpy_CheckEvent(&Expected, 0);
 
    Expected.Id = LIGHTCONTROLLER_BATHROOM;
-   LightScheduler_Test_CheckEvent(&Expected, 1);
+   LightController_DriverSpy_CheckEvent(&Expected, 1);
 }
 
 void test_LightScheduler_RejectTooManyEvents(void)
@@ -318,6 +310,6 @@ void test_LightScheduler_RemoveMultipleScheduledEvents(void)
    Expected.State = LIGHTCONTROLLER_STATE_ON;
    Expected.Time.Day = TIMESERVICE_WEDNESDAY;
    Expected.Time.Minute = MinuteToTest;
-   LightScheduler_Test_CheckEvent(&Expected, 0);
+   LightController_DriverSpy_CheckEvent(&Expected, 0);
 }
 
