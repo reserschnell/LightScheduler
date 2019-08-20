@@ -19,27 +19,27 @@ extern void TimeService_Add(
 
 
 extern BOOL TimeService_IsLeftEarlierThenRight(
-      TimeService_Time * const TimeLeft,
-      TimeService_Time * const TimeRight);
+      const TimeService_Time * const TimeLeft,
+      const TimeService_Time * const TimeRight);
 
 extern BOOL TimeService_IsLeftLaterThenRight(
-      TimeService_Time * const TimeLeft,
-      TimeService_Time * const TimeRight);
+      const TimeService_Time * const TimeLeft,
+      const TimeService_Time * const TimeRight);
 
 extern BOOL TimeService_IsLeftEqualToRight(
-      TimeService_Time * const TimeLeft,
-      TimeService_Time * const TimeRight);
+      const TimeService_Time * const TimeLeft,
+      const TimeService_Time * const TimeRight);
 
 
-extern BOOL TimeService_IsNowEarlierThen(TimeService_Time * const Time);
+extern BOOL TimeService_IsNowEarlierThen(const TimeService_Time * const Time);
 
-extern BOOL TimeService_IsNowEqualTo(TimeService_Time * const Time);
+extern BOOL TimeService_IsNowEqualTo(const TimeService_Time * const Time);
 
-extern BOOL TimeService_IsNowLaterThen(TimeService_Time * const Time);
+extern BOOL TimeService_IsNowLaterThen(const TimeService_Time * const Time);
 
-extern BOOL TimeService_IsNowLaterOrEqualTo(TimeService_Time * const Time);
+extern BOOL TimeService_IsNowLaterOrEqualTo(const TimeService_Time * const Time);
 
-extern BOOL TimeService_IsNowEarlierOrEqualTo(TimeService_Time * const Time);
+extern BOOL TimeService_IsNowEarlierOrEqualTo(const TimeService_Time * const Time);
 
 
 #endif /* TIMESERVICE_H_ */

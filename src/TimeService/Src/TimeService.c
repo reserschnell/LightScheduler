@@ -38,8 +38,6 @@ void TimeService_Add(
 
    DayAdder += MinuteSint16/TIMESERVICE_MAX_MINUTES;
 
-
-
    DayIntSint16 = (sint16)Time->Day;
    DayIntSint16 += Days + DayAdder;
    DayIntSint16 %= TIMESERVICE_MAX_DAYS;
@@ -53,57 +51,42 @@ void TimeService_Add(
 }
 
 static inline sint8 TimeService_lGetLeftRelativeToRight(
-      TimeService_Time * const TimeLeft,
-      TimeService_Time * const TimeRight)
+      const TimeService_Time * const TimeLeft,
+      const TimeService_Time * const TimeRight)
 {
    sint8 LeftRelativeToRight = -1; // TimeLeft is earlier then TimeRight
-   BOOL DayIsEqual;
-   TimeService_Time TimeRightPlusHalfWeek;
+
+   sint16 DayAdder;
+   sint16 MinuteAdder;
+   TimeService_Time TimeLeftNorm;
+   TimeService_Time TimeRightNorm;
 
 
-   DayIsEqual = TimeRight->Day == TimeLeft->Day;
+   TimeRightNorm.Day = TIMESERVICE_THURSDAY;
+   TimeRightNorm.Minute = 12*60;
 
 
-   if (DayIsEqual
-         && TimeRight->Minute == TimeLeft->Minute)
+   DayAdder = (sint16)TimeRightNorm.Day - (sint16)TimeRight->Day;
+   MinuteAdder = (sint16)TimeRightNorm.Minute - (sint16)TimeRight->Minute;
+
+   TimeLeftNorm = *TimeLeft;
+   TimeService_Add(&TimeLeftNorm, DayAdder, MinuteAdder);
+
+
+   if (TimeLeftNorm.Day == TimeRightNorm.Day)
    {
-      LeftRelativeToRight = 0;
+      if (TimeLeftNorm.Minute == TimeRightNorm.Minute)
+      {
+         LeftRelativeToRight = 0;
+      }
+      else if (TimeLeftNorm.Minute > TimeRightNorm.Minute)
+      {
+         LeftRelativeToRight = 1;
+      }
    }
-   else
+   else if (TimeLeftNorm.Day > TimeRightNorm.Day)
    {
-
-      if (DayIsEqual)
-      {
-         // TimeLeft is older then TimeRight
-         if (TimeLeft->Minute > TimeRight->Minute)
-         {
-            LeftRelativeToRight = 1;
-         }
-      }
-      else
-      {
-         TimeRightPlusHalfWeek = *TimeRight;
-         TimeService_Add(&TimeRightPlusHalfWeek, 3, 0);
-
-         // No weekday overflow in the next half week
-         if (TimeRight->Day < TimeRightPlusHalfWeek.Day)
-         {
-            if (TimeLeft->Day > TimeRight->Day
-                  && TimeLeft->Day <= TimeRightPlusHalfWeek.Day)
-            {
-               LeftRelativeToRight = 1;
-            }
-         }
-         else
-         { // Weekday overflow in the next half week
-            if (TimeLeft->Day > TimeRight->Day
-                  || TimeLeft->Day <= TimeRightPlusHalfWeek.Day)
-            {
-               LeftRelativeToRight = 1;
-            }
-
-         }
-      }
+      LeftRelativeToRight = 1;
    }
 
    return (LeftRelativeToRight);
@@ -114,8 +97,8 @@ static inline sint8 TimeService_lGetLeftRelativeToRight(
 
 
 BOOL TimeService_IsLeftEarlierThenRight(
-      TimeService_Time * const TimeLeft,
-      TimeService_Time * const TimeRight)
+      const TimeService_Time * const TimeLeft,
+      const TimeService_Time * const TimeRight)
 {
    BOOL ReturnValue = FALSE;
    sint8 LeftRelativeToRight;
@@ -128,8 +111,8 @@ BOOL TimeService_IsLeftEarlierThenRight(
 
 
 BOOL TimeService_IsLeftLaterThenRight(
-      TimeService_Time * const TimeLeft,
-      TimeService_Time * const TimeRight)
+      const TimeService_Time * const TimeLeft,
+      const TimeService_Time * const TimeRight)
 {
    BOOL ReturnValue = FALSE;
    sint8 LeftRelativeToRight;
@@ -142,8 +125,8 @@ BOOL TimeService_IsLeftLaterThenRight(
 
 
 BOOL TimeService_IsLeftEqualToRight(
-      TimeService_Time * const TimeLeft,
-      TimeService_Time * const TimeRight)
+      const TimeService_Time * const TimeLeft,
+      const TimeService_Time * const TimeRight)
 {
    BOOL ReturnValue = FALSE;
    sint8 LeftRelativeToRight;
@@ -155,7 +138,7 @@ BOOL TimeService_IsLeftEqualToRight(
 }
 
 
-BOOL TimeService_IsNowEarlierThen(TimeService_Time * const Time)
+BOOL TimeService_IsNowEarlierThen(const TimeService_Time * const Time)
 {
    BOOL ReturnValue;
    TimeService_Time Now;
@@ -167,7 +150,7 @@ BOOL TimeService_IsNowEarlierThen(TimeService_Time * const Time)
    return (ReturnValue);
 }
 
-BOOL TimeService_IsNowEqualTo(TimeService_Time * const Time)
+BOOL TimeService_IsNowEqualTo(const TimeService_Time * const Time)
 {
    BOOL ReturnValue;
    TimeService_Time Now;
@@ -179,7 +162,7 @@ BOOL TimeService_IsNowEqualTo(TimeService_Time * const Time)
    return (ReturnValue);
 }
 
-BOOL TimeService_IsNowLaterThen(TimeService_Time * const Time)
+BOOL TimeService_IsNowLaterThen(const TimeService_Time * const Time)
 {
    BOOL ReturnValue;
    TimeService_Time Now;
@@ -192,7 +175,7 @@ BOOL TimeService_IsNowLaterThen(TimeService_Time * const Time)
 }
 
 
-BOOL TimeService_IsNowLaterOrEqualTo(TimeService_Time * const Time)
+BOOL TimeService_IsNowLaterOrEqualTo(const TimeService_Time * const Time)
 {
    BOOL ReturnValue;
 
@@ -202,7 +185,7 @@ BOOL TimeService_IsNowLaterOrEqualTo(TimeService_Time * const Time)
 }
 
 
-BOOL TimeService_IsNowEarlierOrEqualTo(TimeService_Time * const Time)
+BOOL TimeService_IsNowEarlierOrEqualTo(const TimeService_Time * const Time)
 {
    BOOL ReturnValue;
 

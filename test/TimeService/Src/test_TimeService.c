@@ -219,11 +219,12 @@ void test_TimeService_IsEarlierThenNowPreviousDay(void)
 void test_TimeService_IsEarlierThenNowMinus3Days(void)
 {
    TimeService_Time TestTime;
-   uint16 const TestMinute = 0;
+   uint16 const TestMinute = 12*60-1;
 
    TestTime = SetTime(TIMESERVICE_FRIDAY, TestMinute);
 
    TestTime.Day = TIMESERVICE_TUESDAY;
+   TestTime.Minute = 0;
 
    TEST_ASSERT_TRUE(TimeService_IsNowLaterThen(&TestTime));
 }
@@ -232,11 +233,12 @@ void test_TimeService_IsEarlierThenNowMinus3Days(void)
 void test_TimeService_IsEarlierThenNowPlus4Days(void)
 {
    TimeService_Time TestTime;
-   uint16 const TestMinute = 0;
+   uint16 const TestMinute = 12*60-1;
 
    TestTime = SetTime(TIMESERVICE_TUESDAY, TestMinute);
 
    TestTime.Day = TIMESERVICE_SATURDAY;
+   TestTime.Minute = 0;
 
    TEST_ASSERT_TRUE(TimeService_IsNowLaterThen(&TestTime));
 }
