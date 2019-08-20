@@ -12,7 +12,7 @@
 
 void setUp(void)
 {
-   RandomMinute_Init(&RandomMinuteConfig);
+   RandomMinute_Init(&RandomMinute_Config);
    srand(1);
 }
 
@@ -29,7 +29,7 @@ void test_RandomMinute_GetIsInRange(void)
    {
       Minute = RandomMinute_Get();
 
-      TEST_ASSERT_INT16_WITHIN((sint16)RandomMinuteConfig.Bound, 0, Minute);
+      TEST_ASSERT_INT16_WITHIN((sint16)RandomMinute_Config.SpCalib->Bound, 0, Minute);
    }
 }
 
@@ -43,8 +43,8 @@ void test_RandomMinute_AllValuesPossible(void)
    for (i = 0; i < 300; i++)
    {
       Minute = RandomMinute_Get();
-      TEST_ASSERT_INT16_WITHIN((sint16)RandomMinuteConfig.Bound, 0, Minute);
-      ValuePossible[Minute + (sint16)RandomMinuteConfig.Bound] = TRUE;
+      TEST_ASSERT_INT16_WITHIN((sint16)RandomMinute_Config.SpCalib->Bound, 0, Minute);
+      ValuePossible[Minute + (sint16)RandomMinute_Config.SpCalib->Bound] = TRUE;
    }
 
    TEST_ASSERT_EACH_EQUAL_INT(TRUE, ValuePossible, TEST_RANDOMMINUTE_NUMBER_OF_ELEMENTS);

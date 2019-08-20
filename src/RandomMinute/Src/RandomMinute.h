@@ -10,14 +10,19 @@
 
 #include "Std_Types.h"
 
+typedef struct
+{
+   const uint16 Bound;
+}RandomMinute_SpCalibType;
+
 
 typedef struct
 {
-   uint16 Bound;
-}RandomMinuteConfigType;
+   const RandomMinute_SpCalibType * SpCalib;
+}RandomMinute_ConfigType;
 
 
-extern void RandomMinute_Init(RandomMinuteConfigType const * const RandomMinuteConfig);
+extern void RandomMinute_Init(const RandomMinute_ConfigType * const RandomMinute_Config);
 
 
 

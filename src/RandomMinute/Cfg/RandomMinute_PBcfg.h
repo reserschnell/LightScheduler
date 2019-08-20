@@ -15,7 +15,7 @@
 #define RANDOMMINUTE_BOUND 30
 
 
-extern RandomMinuteConfigType const RandomMinuteConfig;
+extern const RandomMinute_ConfigType RandomMinute_Config;
 
 
 #endif /* RANDOMMINUTE_PBCFG_H_ */

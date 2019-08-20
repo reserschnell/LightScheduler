@@ -10,7 +10,13 @@
 
 #include "RandomMinute.h"
 
-RandomMinuteConfigType const RandomMinuteConfig =
+const RandomMinute_SpCalibType RandomMinute_SpCalib =
 {
-   RANDOMMINUTE_BOUND
+   .Bound =  RANDOMMINUTE_BOUND
+};
+
+
+const RandomMinute_ConfigType RandomMinute_Config =
+{
+   .SpCalib = &RandomMinute_SpCalib
 };

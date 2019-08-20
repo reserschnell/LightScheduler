@@ -30,7 +30,7 @@ void LightScheduler_Test_SetUp(void)
 
    LightController_Init(&LightController_Config);
    LightScheduler_Init(&LightSchedulerConfig);
-   RandomMinute_Init(&RandomMinuteConfig);
+   RandomMinute_Init(&RandomMinute_Config);
 
 }
 

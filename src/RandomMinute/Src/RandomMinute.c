@@ -10,30 +10,30 @@
 #include "stdlib.h"
 
 
-typedef struct RandomMinuteType_Tag
+typedef struct
 {
-   RandomMinuteConfigType const * CfgPtr;
-}RandomMinuteType;
+   const RandomMinute_SpCalibType * SpCalib;
+}RandomMinute_Type;
 
 
-RandomMinuteType RandomMinute;
+static RandomMinute_Type RandomMinute;
 
-void RandomMinute_Init(RandomMinuteConfigType const * const RandomMinuteConfig)
+void RandomMinute_Init(const RandomMinute_ConfigType * const RandomMinute_Config)
 {
-   RandomMinute.CfgPtr = RandomMinuteConfig;
+   RandomMinute.SpCalib = RandomMinute_Config->SpCalib;
 }
 
 
 
 sint16 RandomMinute_Get(void)
 {
-   RandomMinuteConfigType const * CfgPtr;
+   RandomMinute_SpCalibType const * SpCalib;
    sint16 Random;
 
-   CfgPtr = RandomMinute.CfgPtr;
+   SpCalib = RandomMinute.SpCalib;
 
-   Random = (sint16)((rand() >> 16)*((int)CfgPtr->Bound * 2)/(RAND_MAX >> 16));
-   Random = Random - (sint16)CfgPtr->Bound;
+   Random = (sint16)((rand() >> 16)*((int)SpCalib->Bound * 2)/(RAND_MAX >> 16));
+   Random = Random - (sint16)SpCalib->Bound;
    return (Random);
 
 }
