@@ -14,4 +14,6 @@
 
 extern LightController_MConfigType LightController_Config;
 
+extern LightController_ConfigType LightControllerCount_Config;
+
 #endif /* LIGHTCONTROLLER_PBCFG_H_ */

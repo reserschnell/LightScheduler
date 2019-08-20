@@ -46,7 +46,7 @@ typedef struct
 typedef struct
 {
    LightController_SpyDataType Data[LIGHTCONTROLLER_SPY_EVENTS];
-   LightController_SpyMDataType MData;
+   LightController_SpyMDataType Sm;
 }LightController_SpyType;
 
 
@@ -66,8 +66,8 @@ void LightController_DriverSpy_Init(LightController_InterfaceType * const Interf
    LightController_SpyDataType * DataPtr;
 
    // Initialize spy data
-   LightController_Spy.MData.EventCntr = 0;
-   LightController_Spy.MData.LastCheckedEvent = -1;
+   LightController_Spy.Sm.EventCntr = 0;
+   LightController_Spy.Sm.LastCheckedEvent = -1;
 
    Expected = Default;
 
@@ -86,7 +86,7 @@ static inline void LightController_Spy_lSetEvent(
       LightController_IdType Id,
       LightController_StateType State)
 {
-   LightController_SpyMDataType* const MDataPtr = &(LightController_Spy.MData);
+   LightController_SpyMDataType* const MDataPtr = &(LightController_Spy.Sm);
    LightController_SpyDataType* const DataPtr =
          &(LightController_Spy.Data[MDataPtr->EventCntr]);
    TimeService_Time Time;
@@ -128,9 +128,9 @@ void LightController_DriverSpy_CheckEvent(LightController_DriverSpyEventType con
    LightController_DriverSpyEventType Given;
    Given = LightController_DriverSpy_GetEvent(NumberGivenEvent);
 
-   if (LightController_Spy.MData.LastCheckedEvent < NumberGivenEvent)
+   if (LightController_Spy.Sm.LastCheckedEvent < NumberGivenEvent)
    {
-      LightController_Spy.MData.LastCheckedEvent = NumberGivenEvent;
+      LightController_Spy.Sm.LastCheckedEvent = NumberGivenEvent;
    }
 
    TEST_ASSERT_EQUAL(ExpectedEvent->Id, Given.Id);
@@ -141,7 +141,7 @@ void LightController_DriverSpy_CheckEvent(LightController_DriverSpyEventType con
 
 void LightController_DriverSpy_CheckDefault(void)
 {
-   uint16 NumberEvent = LightController_Spy.MData.LastCheckedEvent + 1;
+   uint16 NumberEvent = LightController_Spy.Sm.LastCheckedEvent + 1;
 
    LightController_DriverSpy_CheckEvent(&Default, NumberEvent);
 }

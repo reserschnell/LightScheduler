@@ -17,6 +17,15 @@ LightController_DriverCountConfigType LightController_DriverCountConfig =
 };
 
 
+
+LightController_ConfigType LightControllerCount_Config =
+{
+   .DriverInit =
+         (LightController_DriverInitFunction)LightController_DriverCount_Init,
+   .DriverConfig = &LightController_DriverCountConfig
+};
+
+
 LightController_DriverSpyConfigType LightController_DriverSpyConfig =
 {
    .DriverId = 0,

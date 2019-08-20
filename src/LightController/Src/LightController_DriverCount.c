@@ -14,13 +14,13 @@
 typedef struct
 {
    uint16 EventCntr;
-} LightController_CountMDataType;
+} LightController_CountSmType;
 
 
 
 typedef struct
 {
-   LightController_CountMDataType MData;
+   LightController_CountSmType Sm;
 }LightController_CountType;
 
 
@@ -36,10 +36,9 @@ static void LightController_DriverCount_Off(uint8 DriverId);
 void LightController_DriverCount_Init(LightController_InterfaceType * const Interface,
       LightController_DriverCountConfigType const * const Config)
 {
-   uint16 EventCntr;
 
    // Initialize spy data
-   LightController_Count.MData.EventCntr = 0;
+   LightController_Count.Sm.EventCntr = 0;
 
    // Set interface
    Interface->DriverOff = LightController_DriverCount_Off;
@@ -50,7 +49,7 @@ static inline void LightController_Count_lSetEvent(
       LightController_IdType Id,
       LightController_StateType State)
 {
-   LightController_CountMDataType* const MDataPtr = &(LightController_Count.MData);
+   LightController_CountSmType* const MDataPtr = &(LightController_Count.Sm);
 
    MDataPtr->EventCntr++;
 
@@ -72,7 +71,7 @@ static void LightController_DriverCount_Off(uint8 Id)
 
 uint16 LightController_DriverCount_GetEventCntr(void)
 {
-   return (LightController_Count.MData.EventCntr);
+   return (LightController_Count.Sm.EventCntr);
 }
 
 

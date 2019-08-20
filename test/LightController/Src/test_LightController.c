@@ -3,6 +3,7 @@
 #include "LightController_PBcfg.h"
 #include "LightController.h"
 #include "LightController_DriverSpy.h"
+#include "LightController_DriverCount.h"
 
 #include "mock_TimeService_Os.h"
 
@@ -47,9 +48,27 @@ void tearDown(void)
 void test_LightController_RememberTheLastLightIdControlled(void)
 {
 
-
    LightController_On(LIGHTCONTROLLER_BATHROOM);
 
    Expected.Id = LIGHTCONTROLLER_BATHROOM;
    LightController_DriverSpy_CheckEvent(&Expected, 0);
 }
+
+
+void test_LightController_TurnOnDifferentDriverTypes(void)
+{
+
+   LightController_SetDriver(LIGHTCONTROLLER_KITCHEN, &LightControllerCount_Config);
+
+   LightController_On(LIGHTCONTROLLER_KITCHEN);
+   LightController_Off(LIGHTCONTROLLER_KITCHEN);
+
+   LightController_On(LIGHTCONTROLLER_LIVINGROOM);
+
+
+   TEST_ASSERT_EQUAL_UINT16(2, LightController_DriverCount_GetEventCntr());
+
+   Expected.Id = LIGHTCONTROLLER_LIVINGROOM;
+   LightController_DriverSpy_CheckEvent(&Expected, 0);
+}
+

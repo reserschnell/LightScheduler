@@ -15,6 +15,7 @@
 
 TEST_FILE("LightController.c")
 TEST_FILE("TimeService.c")
+TEST_FILE("LightController_DriverCount.c")
 
 
 LightSchedulerMConfigType const LightScheduler_FakeMConfig =
