@@ -10,7 +10,7 @@
 #include "Std_Types.h"
 #include "TimeService.h"
 
-struct LightSchedulerDataType_tag
+struct LightScheduler_SelfTypeTag
 {
    BOOL IsFree;
    LightController_IdType Id;
@@ -24,46 +24,46 @@ struct LightSchedulerDataType_tag
 
 typedef struct
 {
-   LightSchedulerDataType Data[LIGHTSCHEDULER_MAX_EVENTS];
-   LightSchedulerMConfigType const * MCfgPtr;
-}LightSchedulerType;
+   LightScheduler_SelfType Self[LIGHTSCHEDULER_MAX_EVENTS];
+   LightScheduler_SpConstType const * SpConst;
+}LightScheduler_Type;
 
 
-static LightSchedulerType LightScheduler;
+static LightScheduler_Type LightScheduler;
 
 
-void LightScheduler_Init(LightSchedulerConfigType const * const ConfigPtr)
+void LightScheduler_Init(const LightScheduler_ConfigType * const Config)
 {
-   LightSchedulerDataType * DataPtr;
+   LightScheduler_SelfType * Self;
    uint16 Id;
 
-   LightScheduler.MCfgPtr = ConfigPtr->MCfgPtr;
+   LightScheduler.SpConst = Config->SpConst;
 
    for (Id = 0; Id < LIGHTSCHEDULER_MAX_EVENTS; Id++)
    {
-      DataPtr = &(LightScheduler.Data[Id]);
-      DataPtr->Id = LIGHTCONTROLLER_ID_UNKNOWN;
-      DataPtr->DayRequest = LIGHTSCHEDULER_EVERYDAY;
-      DataPtr->MinuteRequest = 0;
-      DataPtr->StateRequest = LIGHTCONTROLLER_STATE_OFF;
-      DataPtr->NextEventTime.Day = TIMESERVICE_MONDAY;
-      DataPtr->NextEventTime.Minute = 0;
-      DataPtr->SwitchingDone = FALSE;
+      Self = &(LightScheduler.Self[Id]);
+      Self->Id = LIGHTCONTROLLER_ID_UNKNOWN;
+      Self->DayRequest = LIGHTSCHEDULER_EVERYDAY;
+      Self->MinuteRequest = 0;
+      Self->StateRequest = LIGHTCONTROLLER_STATE_OFF;
+      Self->NextEventTime.Day = TIMESERVICE_MONDAY;
+      Self->NextEventTime.Minute = 0;
+      Self->SwitchingDone = FALSE;
 
-      DataPtr->IsFree = TRUE;
-      DataPtr->IsRandomized = FALSE;
+      Self->IsFree = TRUE;
+      Self->IsRandomized = FALSE;
    }
 
 }
 
 
 static inline BOOL LightScheduler_lIsDayMatching(
-      LightSchedulerDataType const * const DataPtr,
-      TimeService_Time const * const Time)
+      const LightScheduler_SelfType * const Self,
+      const TimeService_Time * const Time)
 {
    BOOL DayIsMatching = FALSE;
 
-   switch (DataPtr->DayRequest)
+   switch (Self->DayRequest)
    {
       case LIGHTSCHEDULER_EVERYDAY:
          DayIsMatching = TRUE;
@@ -125,84 +125,89 @@ static inline BOOL LightScheduler_lIsDayMatching(
    return (DayIsMatching);
 }
 
-static inline void LightScheduler_lSetNextSwitchingTime(LightSchedulerDataType * DataPtr)
-{
-   sint32 MinuteAdder;
-   BOOL NextSwitchingTimeFound = FALSE;
-   TimeService_Time SearchTime;
-   TimeService_Time Now;
-   TimeService_Time NowRandom;
-   BOOL SearchInFuture = FALSE;
 
-   if (DataPtr->IsRandomized == TRUE)
+
+static inline void LightScheduler_lInitSearchTime(
+      LightScheduler_SelfType * const Self,
+      TimeService_Time * const SearchTime,
+      sint32 RandomMinute)
+{
+
+   TimeService_Time StartOfSearch;
+
+   TimeService_GetTime(&StartOfSearch);
+
+   if (Self->SwitchingDone)
    {
-      MinuteAdder = LightScheduler.MCfgPtr->GetRandomMinute();
+      // Ensures that a light switches only once a day
+      TimeService_Add(&StartOfSearch, 0, 12*60);
+      Self->SwitchingDone = FALSE;
    }
    else
    {
-      MinuteAdder = 0;
+      TimeService_Add(&StartOfSearch, 0, -RandomMinute);
    }
 
-   TimeService_GetTime(&Now);
-   NowRandom = Now;
-   TimeService_Add(&NowRandom, 0, -MinuteAdder);
+   SearchTime->Day = StartOfSearch.Day;
+   SearchTime->Minute = Self->MinuteRequest;
 
-   SearchTime = Now;
-   SearchTime.Minute = DataPtr->MinuteRequest;
-
-   do
+   if (TimeService_IsLeftEarlierThenRight(SearchTime, &StartOfSearch))
    {
-      if (SearchInFuture == FALSE
-            && TimeService_IsLeftLaterThenRight(&SearchTime, &NowRandom))
-      {
-         SearchInFuture = TRUE;
-      }
-
-      if (SearchInFuture
-            && LightScheduler_lIsDayMatching(DataPtr, &SearchTime))
-      {
-         NextSwitchingTimeFound = TRUE;
-      }
-
-      if (!NextSwitchingTimeFound)
-      {
-         TimeService_Add(&SearchTime, 1, 0);
-      }
-   } while (!NextSwitchingTimeFound);
+      TimeService_Add(SearchTime, 1, 0);
+   }
+}
 
 
-   TimeService_Add(&SearchTime, 0, MinuteAdder);
+static inline void LightScheduler_lSetNextSwitchingTime(
+      LightScheduler_SelfType * const Self)
+{
+   sint32 RandomMinute = 0;
+   TimeService_Time SearchTime;
 
+   if (Self->IsRandomized == TRUE)
+   {
+      RandomMinute = LightScheduler.SpConst->GetRandomMinute();
+   }
 
-   DataPtr->NextEventTime = SearchTime;
+   LightScheduler_lInitSearchTime(Self, &SearchTime, RandomMinute);
+
+   while(!LightScheduler_lIsDayMatching(Self, &SearchTime))
+   {
+      TimeService_Add(&SearchTime, 1, 0);
+   }
+
+   TimeService_Add(&SearchTime, 0, RandomMinute);
+
+   Self->NextEventTime = SearchTime;
 }
 
 
 
-LightSchedulerDataType * LightScheduler_Create(
+LightScheduler_SelfType * LightScheduler_Create(
       LightController_IdType IdLightController,
       LightScheduler_DayType Day,
       uint16 MinuteOfDay)
 {
-   LightSchedulerDataType * DataPtr;
-   LightSchedulerDataType * ReturnPtr = NULL_PTR;
+   LightScheduler_SelfType * Self;
+   LightScheduler_SelfType * ReturnPtr = NULL_PTR;
    uint16 Id;
 
    for (Id = 0; Id < LIGHTSCHEDULER_MAX_EVENTS; Id++)
    {
-      DataPtr = &(LightScheduler.Data[Id]);
+      Self = &(LightScheduler.Self[Id]);
 
-      if (DataPtr->IsFree)
+      if (Self->IsFree)
       {
-         DataPtr->Id = IdLightController;
-         DataPtr->DayRequest = Day;
-         DataPtr->MinuteRequest = MinuteOfDay;
-         DataPtr->StateRequest = LIGHTCONTROLLER_STATE_ON;
-         DataPtr->IsFree = FALSE;
+         Self->Id = IdLightController;
+         Self->DayRequest = Day;
+         Self->MinuteRequest = MinuteOfDay;
+         Self->StateRequest = LIGHTCONTROLLER_STATE_ON;
+         Self->SwitchingDone = FALSE;
+         Self->IsFree = FALSE;
 
-         LightScheduler_lSetNextSwitchingTime(DataPtr);
+         LightScheduler_lSetNextSwitchingTime(Self);
 
-         ReturnPtr = DataPtr;
+         ReturnPtr = Self;
          break;
       }
    }
@@ -211,10 +216,11 @@ LightSchedulerDataType * LightScheduler_Create(
 }
 
 
-static inline Std_ReturnType LichtScheduler_lCheck(LightSchedulerDataType * DataPtr)
+static inline Std_ReturnType LichtScheduler_lCheck(
+      const LightScheduler_SelfType * const Self)
 {
    Std_ReturnType ReturnValue = E_OK;
-   if (DataPtr->IsFree)
+   if (Self->IsFree)
    {
       ReturnValue = E_NOT_OK;
    }
@@ -222,51 +228,53 @@ static inline Std_ReturnType LichtScheduler_lCheck(LightSchedulerDataType * Data
    return(ReturnValue);
 }
 
-Std_ReturnType LightScheduler_TurnOn(LightSchedulerDataType * DataPtr)
+Std_ReturnType LightScheduler_TurnOn(LightScheduler_SelfType * const Self)
 {
    Std_ReturnType ReturnValue;
 
-   ReturnValue = LichtScheduler_lCheck(DataPtr);
+   ReturnValue = LichtScheduler_lCheck(Self);
    if (ReturnValue == E_OK)
-      DataPtr->StateRequest = LIGHTCONTROLLER_STATE_ON;
+   {
+      Self->StateRequest = LIGHTCONTROLLER_STATE_ON;
+   }
 
    return(ReturnValue);
 }
 
 
-Std_ReturnType LightScheduler_TurnOff(LightSchedulerDataType * DataPtr)
+Std_ReturnType LightScheduler_TurnOff(LightScheduler_SelfType * const Self)
 {
    Std_ReturnType ReturnValue;
 
-   ReturnValue = LichtScheduler_lCheck(DataPtr);
+   ReturnValue = LichtScheduler_lCheck(Self);
    if (ReturnValue == E_OK)
-      DataPtr->StateRequest = LIGHTCONTROLLER_STATE_OFF;
+      Self->StateRequest = LIGHTCONTROLLER_STATE_OFF;
 
    return (ReturnValue);
 }
 
-Std_ReturnType LightScheduler_Remove(LightSchedulerDataType * DataPtr)
+Std_ReturnType LightScheduler_Remove(LightScheduler_SelfType * const Self)
 {
    Std_ReturnType ReturnValue;
 
-   ReturnValue = LichtScheduler_lCheck(DataPtr);
+   ReturnValue = LichtScheduler_lCheck(Self);
    if (ReturnValue == E_OK)
-      DataPtr->IsFree = TRUE;
+      Self->IsFree = TRUE;
 
    return (ReturnValue);
 }
 
-Std_ReturnType LightScheduler_Randomize(LightSchedulerDataType * DataPtr)
+Std_ReturnType LightScheduler_Randomize(LightScheduler_SelfType * const Self)
 {
    Std_ReturnType ReturnValue;
 
-   ReturnValue = LichtScheduler_lCheck(DataPtr);
+   ReturnValue = LichtScheduler_lCheck(Self);
 
    if (ReturnValue == E_OK)
    {
-      DataPtr->IsRandomized = TRUE;
+      Self->IsRandomized = TRUE;
 
-      LightScheduler_lSetNextSwitchingTime(DataPtr);
+      LightScheduler_lSetNextSwitchingTime(Self);
    }
 
    return (ReturnValue);
@@ -275,60 +283,46 @@ Std_ReturnType LightScheduler_Randomize(LightSchedulerDataType * DataPtr)
 
 
 static inline void LightScheduler_lDoLightSwitching(
-      LightSchedulerDataType * const DataPtr)
+      LightScheduler_SelfType * const Self)
 {
 
-   if (DataPtr->StateRequest == LIGHTCONTROLLER_STATE_ON)
+   if (Self->StateRequest == LIGHTCONTROLLER_STATE_ON)
    {
-      LightController_On(DataPtr->Id);
+      LightController_On(Self->Id);
    }
-   else if (DataPtr->StateRequest == LIGHTCONTROLLER_STATE_OFF)
+   else if (Self->StateRequest == LIGHTCONTROLLER_STATE_OFF)
    {
-      LightController_Off(DataPtr->Id);
+      LightController_Off(Self->Id);
    }
+
+   Self->SwitchingDone = TRUE;
 
 }
 
 
 static inline void LightScheduler_lDoEventProcessing(
-      LightSchedulerDataType * const DataPtr)
+      LightScheduler_SelfType * const Self)
 {
 
-   if (TimeService_IsNowEqualTo(&(DataPtr->NextEventTime)))
+   if (TimeService_IsNowEqualTo(&(Self->NextEventTime)))
    {
 
-      if (DataPtr->SwitchingDone)
-      {
-         LightScheduler_lSetNextSwitchingTime(DataPtr);
-         DataPtr->SwitchingDone = FALSE;
-      }
-      else
-      {
-         LightScheduler_lDoLightSwitching(DataPtr);
-
-         // Reset randomization
-         DataPtr->NextEventTime.Minute = DataPtr->MinuteRequest;
-         // increment by half a day until next switching day is searched
-         TimeService_Add(&DataPtr->NextEventTime, 0, 12*60);
-
-         DataPtr->SwitchingDone = TRUE;
-      }
-
-
+      LightScheduler_lDoLightSwitching(Self);
+      LightScheduler_lSetNextSwitchingTime(Self);
    }
 }
 
 void LightScheduler_MainFunction(void)
 {
-   LightSchedulerDataType * DataPtr;
+   LightScheduler_SelfType * Self;
    uint16 Id;
 
    for (Id = 0; Id < LIGHTSCHEDULER_MAX_EVENTS; Id++)
    {
-      DataPtr = &(LightScheduler.Data[Id]);
-      if (!DataPtr->IsFree)
+      Self = &(LightScheduler.Self[Id]);
+      if (!Self->IsFree)
       {
-         LightScheduler_lDoEventProcessing(DataPtr);
+         LightScheduler_lDoEventProcessing(Self);
       }
    }
 

@@ -29,7 +29,7 @@ void LightScheduler_Test_SetUp(void)
    TimeService_Os_Mock_SetTime(Default.Time.Day, Default.Time.Minute);
 
    LightController_Init(&LightController_Config);
-   LightScheduler_Init(&LightSchedulerConfig);
+   LightScheduler_Init(&LightScheduler_Config);
    RandomMinute_Init(&RandomMinute_Config);
 
 }

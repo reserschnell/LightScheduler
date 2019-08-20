@@ -11,13 +11,13 @@
 
 #include "RandomMinute.h"
 
-LightSchedulerMConfigType const LightSchedulerMConfig =
+const LightScheduler_SpConstType LightScheduler_SpConst =
 {
    RandomMinute_Get
 };
 
-LightSchedulerConfigType const LightSchedulerConfig =
+const LightScheduler_ConfigType LightScheduler_Config =
 {
-   &LightSchedulerMConfig
+   &LightScheduler_SpConst
 };
 

@@ -31,35 +31,35 @@ typedef enum
 typedef struct
 {
    sint16 (* GetRandomMinute)(void);
-}LightSchedulerMConfigType;
+}LightScheduler_SpConstType;
 
 typedef struct
 {
-   LightSchedulerMConfigType const *MCfgPtr;
-}LightSchedulerConfigType;
+   const LightScheduler_SpConstType * SpConst;
+}LightScheduler_ConfigType;
 
 
-typedef struct LightSchedulerDataType_tag LightSchedulerDataType;
+typedef struct LightScheduler_SelfTypeTag LightScheduler_SelfType;
 
 
-extern void LightScheduler_Init(LightSchedulerConfigType const * const ConfigPtr);
+extern void LightScheduler_Init(const LightScheduler_ConfigType * const Config);
 
 
-extern LightSchedulerDataType * LightScheduler_Create(
+extern LightScheduler_SelfType * LightScheduler_Create(
       LightController_IdType Id,
       LightScheduler_DayType Day,
       uint16 MinuteOfDay);
 
-extern Std_ReturnType LightScheduler_TurnOn(LightSchedulerDataType * DataPtr);
+extern Std_ReturnType LightScheduler_TurnOn(LightScheduler_SelfType * const Self);
 
 
-extern Std_ReturnType LightScheduler_TurnOff(LightSchedulerDataType * DataPtr);
+extern Std_ReturnType LightScheduler_TurnOff(LightScheduler_SelfType * const Self);
 
 
-extern Std_ReturnType LightScheduler_Remove(LightSchedulerDataType * DataPtr);
+extern Std_ReturnType LightScheduler_Remove(LightScheduler_SelfType * const Self);
 
 
-extern Std_ReturnType LightScheduler_Randomize(LightSchedulerDataType * DataPtr);
+extern Std_ReturnType LightScheduler_Randomize(LightScheduler_SelfType * const Self);
 
 
 extern void LightScheduler_MainFunction(void);

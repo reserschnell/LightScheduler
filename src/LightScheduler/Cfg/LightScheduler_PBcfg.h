@@ -11,7 +11,7 @@
 
 #include "LightScheduler.h"
 
-extern LightSchedulerConfigType const LightSchedulerConfig;
+extern const LightScheduler_ConfigType LightScheduler_Config;
 
 
 #endif /* CFG_LIGHTSCHEDULER_PBCFG_H_ */

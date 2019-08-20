@@ -74,7 +74,7 @@ void test_LightScheduler_ScheduleOnEverydayItsTime(void)
 void test_LightScheduler_ScheduleOffEverydayItsTime(void)
 {
    uint16 const MinuteToTest = 1200;
-   LightSchedulerDataType * SchedulePtr;
+   LightScheduler_SelfType * SchedulePtr;
 
    SchedulePtr = LightScheduler_Create(
          LIGHTCONTROLLER_BEDROOM,
@@ -161,7 +161,7 @@ void test_LightScheduler_ScheduleWeekdayAndItsWeekend(void)
 {
    uint16 const MinuteToTest = 800;
 
-   TimeService_Os_Mock_SetTime(TIMESERVICE_FRIDAY, MinuteToTest);
+   TimeService_Os_Mock_SetTime(TIMESERVICE_FRIDAY, MinuteToTest+1);
 
    LightScheduler_Create(
          LIGHTCONTROLLER_BEDROOM,
@@ -221,7 +221,7 @@ void test_LightScheduler_ScheduleTwoEventsAtTheSameTime(void)
 void test_LightScheduler_RejectTooManyEvents(void)
 {
    int i;
-   LightSchedulerDataType * ReturnPtr;
+   LightScheduler_SelfType * ReturnPtr;
 
    for (i = 0; i < LIGHTSCHEDULER_MAX_EVENTS; i++)
    {
@@ -244,7 +244,7 @@ void test_LightScheduler_RejectTooManyEvents(void)
 void test_LightScheduler_RemoveRecyclesScheduledSlot(void)
 {
    int i;
-   LightSchedulerDataType * ReturnPtr;
+   LightScheduler_SelfType * ReturnPtr;
 
    for (i = 0; i < LIGHTSCHEDULER_MAX_EVENTS; i++)
    {
@@ -269,7 +269,7 @@ void test_LightScheduler_RemoveRecyclesScheduledSlot(void)
 
 void test_LightScheduler_RemoveScheduleCantBeFound(void)
 {
-   LightSchedulerDataType * ReturnPtr;
+   LightScheduler_SelfType * ReturnPtr;
    Std_ReturnType ReturnValue;
 
    ReturnPtr =
@@ -289,7 +289,7 @@ void test_LightScheduler_RemoveScheduleCantBeFound(void)
 
 void test_LightScheduler_RemoveMultipleScheduledEvents(void)
 {
-   LightSchedulerDataType * BedroomPtr;
+   LightScheduler_SelfType * BedroomPtr;
    uint16 const MinuteToTest = 800;
 
    BedroomPtr =

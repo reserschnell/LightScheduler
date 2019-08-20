@@ -18,12 +18,12 @@ TEST_FILE("TimeService.c")
 TEST_FILE("LightController_DriverCount.c")
 
 
-LightSchedulerMConfigType const LightScheduler_FakeMConfig =
+LightScheduler_SpConstType const LightScheduler_FakeMConfig =
 {
       RandomMinute_Fake_Get
 };
 
-LightSchedulerConfigType const LightScheduler_FakeConfig =
+LightScheduler_ConfigType const LightScheduler_FakeConfig =
 {
       &LightScheduler_FakeMConfig
 };
@@ -45,7 +45,7 @@ void tearDown(void)
 
 void test_LightSchedulerRandomize_TurnsOnEarly(void)
 {
-   LightSchedulerDataType * BedroomPtr;
+   LightScheduler_SelfType * BedroomPtr;
    uint16 const MinuteToTest = 600;
 
    RandomMinute_Fake_SetFirstAndIncrement(-10, 5);
@@ -73,7 +73,7 @@ void test_LightSchedulerRandomize_TurnsOnEarly(void)
 
 void test_LightSchedulerRandomize_TurnsOnOnlyOnceADayDecrementTime(void)
 {
-   LightSchedulerDataType * BedroomPtr;
+   LightScheduler_SelfType * BedroomPtr;
    uint16 const MinuteToTest = 600;
 
    RandomMinute_Fake_SetFirstAndIncrement(10, -10);
@@ -100,7 +100,7 @@ void test_LightSchedulerRandomize_TurnsOnOnlyOnceADayDecrementTime(void)
 
 void test_LightSchedulerRandomize_TurnsOnOnlyOnceADayIncrementTime(void)
 {
-   LightSchedulerDataType * BedroomPtr;
+   LightScheduler_SelfType * BedroomPtr;
    uint16 const MinuteToTest = 600;
 
    RandomMinute_Fake_SetFirstAndIncrement(-10, 10);
@@ -128,7 +128,7 @@ void test_LightSchedulerRandomize_TurnsOnOnlyOnceADayIncrementTime(void)
 
 void test_LightSchedulerRandomize_RandomizeAtMidnight(void)
 {
-   LightSchedulerDataType * BedroomPtr;
+   LightScheduler_SelfType * BedroomPtr;
    uint16 const MinuteToTest = (24 * 60 - 1);
 
    RandomMinute_Fake_SetFirstAndIncrement(-10, 10);
