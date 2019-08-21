@@ -19,31 +19,33 @@ typedef enum
    LIGHTCONTROLLER_STATE_ON
 } LightController_StateType;
 
-typedef struct LightController_InterfaceType_tag LightController_InterfaceType;
+typedef struct LightController_InterfaceTypeTag LightController_InterfaceType;
 
 typedef void (*LightController_DriverInitFunction)
       (LightController_InterfaceType * const Interface,
+            uint8 DriverId,
             void const * const DriverConfig);
 
 
 typedef struct
 {
+   const uint8 DriverId;
    const LightController_DriverInitFunction DriverInit;
-   void const * const DriverConfig;
-} LightController_ConfigType;
+   const void * const DriverConfig;
+} LightController_PipConstType;
 
 typedef struct
 {
-   LightController_ConfigType Config[LIGHTCONTROLLER_ID_MAX];
-}LightController_MConfigType;
+   LightController_PipConstType PipConst[LIGHTCONTROLLER_ID_MAX];
+}LightController_ConfigType;
 
 
 
 
-extern void LightController_Init(LightController_MConfigType const * const Config);
+extern void LightController_Init(const LightController_ConfigType * const Config);
 
 extern void LightController_SetDriver(LightController_IdType Id,
-      LightController_ConfigType const * const Config);
+      const LightController_PipConstType * const Config);
 
 extern void LightController_On(LightController_IdType Id);
 

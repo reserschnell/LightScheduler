@@ -10,20 +10,15 @@
 
 #include "Std_Types.h"
 #include "LightController_Driver.h"
-#include "LightController.h"
-
-
-
-typedef struct
-{
-   uint8 PlaceHolder;
-} LightController_DriverCountConfigType;
 
 
 
 
 extern void LightController_DriverCount_Init(LightController_InterfaceType * const Interface,
-      LightController_DriverCountConfigType const * const Config);
+      uint8 DriverCountId,
+      const void * const Config);
+
+extern void LightController_DriverCount_DeInit(void);
 
 extern uint16 LightController_DriverCount_GetEventCntr(void);
 

@@ -12,8 +12,8 @@
 #include "LightController.h"
 #include "LightController_DriverSpy.h"
 
-extern LightController_MConfigType LightController_Config;
+extern const LightController_ConfigType LightController_Config;
 
-extern LightController_ConfigType LightControllerCount_Config;
+extern const LightController_PipConstType LightController_DriverCount_Config;
 
 #endif /* LIGHTCONTROLLER_PBCFG_H_ */

@@ -11,66 +11,112 @@
 #include "LightController_DriverCount.h"
 
 
-LightController_DriverCountConfigType LightController_DriverCountConfig =
-{
-   .PlaceHolder = 0
-};
 
 
-
-LightController_ConfigType LightControllerCount_Config =
-{
-   .DriverInit =
-         (LightController_DriverInitFunction)LightController_DriverCount_Init,
-   .DriverConfig = &LightController_DriverCountConfig
-};
-
-
-LightController_DriverSpyConfigType LightController_DriverSpyConfig =
+const LightController_PipConstType LightController_DriverCount_Config =
 {
    .DriverId = 0,
-   .CounterMax = 0,
-   .TimerActive = 0
+   .DriverInit =
+      (LightController_DriverInitFunction)LightController_DriverCount_Init,
+   .DriverConfig = NULL_PTR
 };
 
 
-LightController_MConfigType LightController_Config =
+
+static const LightController_DriverSpy_PipCalibType
+      LightController_DriverSpy_PipCalib[LIGHTCONTROLLER_DRIVER_SPY_ID_MAX] =
 {
-   .Config[0] =
    {
-      .DriverInit =
-            (LightController_DriverInitFunction)LightController_DriverSpy_Init,
-      .DriverConfig = &LightController_DriverSpyConfig
+      0
    },
-   .Config[1] =
    {
-      .DriverInit =
-            (LightController_DriverInitFunction)LightController_DriverSpy_Init,
-      .DriverConfig = &LightController_DriverSpyConfig
+      0
    },
-   .Config[2] =
    {
-      .DriverInit =
-            (LightController_DriverInitFunction)LightController_DriverSpy_Init,
-      .DriverConfig = &LightController_DriverSpyConfig
+      0
    },
-   .Config[3] =
    {
-      .DriverInit =
-            (LightController_DriverInitFunction)LightController_DriverSpy_Init,
-      .DriverConfig = &LightController_DriverSpyConfig
+      0
    },
-   .Config[4] =
    {
-      .DriverInit =
-            (LightController_DriverInitFunction)LightController_DriverSpy_Init,
-      .DriverConfig = &LightController_DriverSpyConfig
+      0
    },
-   .Config[5] =
    {
+      0
+   }
+};
+
+const LightController_DriverSpy_ConfigType LightController_DriverSpy_Config =
+{
+   .PipConst =
+   {
+      {
+         LIGHTCONTROLLER_BATHROOM,
+      },
+      {
+         LIGHTCONTROLLER_LIVINGROOM,
+      },
+      {
+         LIGHTCONTROLLER_KITCHEN,
+      },
+      {
+         LIGHTCONTROLLER_BEDROOM,
+      },
+      {
+         LIGHTCONTROLLER_CHILD1,
+      },
+      {
+         LIGHTCONTROLLER_CHILD2
+      }
+   },
+   .PipCalib = &LightController_DriverSpy_PipCalib[0]
+};
+
+
+
+const LightController_ConfigType LightController_Config =
+{
+   .PipConst[0] =
+   {
+      .DriverId = 0,
       .DriverInit =
             (LightController_DriverInitFunction)LightController_DriverSpy_Init,
-      .DriverConfig = &LightController_DriverSpyConfig
+      .DriverConfig = &LightController_DriverSpy_Config
+   },
+   .PipConst[1] =
+   {
+      .DriverId = 1,
+      .DriverInit =
+            (LightController_DriverInitFunction)LightController_DriverSpy_Init,
+      .DriverConfig = &LightController_DriverSpy_Config
+   },
+   .PipConst[2] =
+   {
+      .DriverId = 2,
+      .DriverInit =
+            (LightController_DriverInitFunction)LightController_DriverSpy_Init,
+      .DriverConfig = &LightController_DriverSpy_Config
+   },
+   .PipConst[3] =
+   {
+      .DriverId = 3,
+      .DriverInit =
+            (LightController_DriverInitFunction)LightController_DriverSpy_Init,
+      .DriverConfig = &LightController_DriverSpy_Config
+   },
+   .PipConst[4] =
+   {
+      .DriverId = 4,
+      .DriverInit =
+            (LightController_DriverInitFunction)LightController_DriverSpy_Init,
+      .DriverConfig = &LightController_DriverSpy_Config
+   },
+   .PipConst[5] =
+   {
+      .DriverId = 5,
+      .DriverInit =
+            (LightController_DriverInitFunction)LightController_DriverSpy_Init,
+      .DriverConfig = &LightController_DriverSpy_Config
    }
 };
 

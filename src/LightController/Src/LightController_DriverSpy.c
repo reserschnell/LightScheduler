@@ -31,109 +31,134 @@ static const LightController_DriverSpyEventType Default =
 
 typedef struct
 {
-   LightController_DriverSpyEventType Given;
-} LightController_SpyDataType;
+   const LightController_DriverSpy_PipConstType * PipConst;
+   const LightController_DriverSpy_PipCalibType * PipCalib;
+} LightController_DriverSpy_SelfType;
+
 
 
 typedef struct
 {
+   uint8 ModuleInitialized;
    uint16 EventCntr;
    sint32 LastCheckedEvent;
-} LightController_SpyMDataType;
+   LightController_DriverSpyEventType Given[LIGHTCONTROLLER_SPY_EVENTS];
+} LightController_DriverSpy_SmType;
 
 
 
 typedef struct
 {
-   LightController_SpyDataType Data[LIGHTCONTROLLER_SPY_EVENTS];
-   LightController_SpyMDataType Sm;
-}LightController_SpyType;
+   LightController_DriverSpy_SmType Sm;
+   LightController_DriverSpy_SelfType Self[LIGHTCONTROLLER_DRIVER_SPY_ID_MAX];
+}LightController_DriverSpyType;
 
 
 
-static LightController_SpyType LightController_Spy;
+static LightController_DriverSpyType LightController_DriverSpy;
 
-static void LightController_DriverSpy_On(uint8 DriverId);
+static void LightController_DriverSpy_On(uint8 DriverSpyId);
 
-static void LightController_DriverSpy_Off(uint8 DriverId);
+static void LightController_DriverSpy_Off(uint8 DriverSpyId);
 
 
 
 void LightController_DriverSpy_Init(LightController_InterfaceType * const Interface,
-      LightController_DriverSpyConfigType const * const Config)
+      uint8 DriverSpyId,
+      const LightController_DriverSpy_ConfigType * const Config)
 {
    uint16 EventCntr;
-   LightController_SpyDataType * DataPtr;
+   LightController_DriverSpy_SelfType * Self;
 
-   // Initialize spy data
-   LightController_Spy.Sm.EventCntr = 0;
-   LightController_Spy.Sm.LastCheckedEvent = -1;
 
-   Expected = Default;
 
-   for (EventCntr = 0; EventCntr < LIGHTCONTROLLER_SPY_EVENTS; EventCntr++)
+   // Initialize shared memory
+   if (LightController_DriverSpy.Sm.ModuleInitialized != 0xAF)
    {
-      DataPtr = &(LightController_Spy.Data[EventCntr]);
-      DataPtr->Given = Default;
+      // Initialize spy data
+      LightController_DriverSpy.Sm.EventCntr = 0;
+      LightController_DriverSpy.Sm.LastCheckedEvent = -1;
+
+      Expected = Default;
+
+      for (EventCntr = 0; EventCntr < LIGHTCONTROLLER_SPY_EVENTS; EventCntr++)
+      {
+         LightController_DriverSpy.Sm.Given[EventCntr] = Default;
+      }
+      LightController_DriverSpy.Sm.ModuleInitialized = 0xAF;
    }
 
    // Set interface
    Interface->DriverOff = LightController_DriverSpy_Off;
    Interface->DriverOn = LightController_DriverSpy_On;
+
+   // Initialize self memory
+   Self = &(LightController_DriverSpy.Self[DriverSpyId]);
+   Self->PipConst = &(Config->PipConst[DriverSpyId]);
+   Self->PipCalib = &(Config->PipCalib[DriverSpyId]);
 }
 
+void LightController_DriverSpy_DeInit(void)
+{
+   LightController_DriverSpy.Sm.ModuleInitialized = 0;
+}
+
+
 static inline void LightController_Spy_lSetEvent(
-      LightController_IdType Id,
+      LightController_IdType LightControllerId,
       LightController_StateType State)
 {
-   LightController_SpyMDataType* const MDataPtr = &(LightController_Spy.Sm);
-   LightController_SpyDataType* const DataPtr =
-         &(LightController_Spy.Data[MDataPtr->EventCntr]);
+   LightController_DriverSpy_SmType * const Sm = &(LightController_DriverSpy.Sm);
+   LightController_DriverSpyEventType * const Given =
+         &(LightController_DriverSpy.Sm.Given[Sm->EventCntr]);
    TimeService_Time Time;
 
    TimeService_GetTime(&Time);
 
-   DataPtr->Given.Id = Id;
-   DataPtr->Given.State = State;
-   DataPtr->Given.Time = Time;
-   MDataPtr->EventCntr++;
-   if (MDataPtr->EventCntr >= LIGHTCONTROLLER_SPY_EVENTS)
+   Given->LightControllerId = LightControllerId;
+   Given->State = State;
+   Given->Time = Time;
+   Sm->EventCntr++;
+   if (Sm->EventCntr >= LIGHTCONTROLLER_SPY_EVENTS)
    {
-      MDataPtr->EventCntr = 0;
+      Sm->EventCntr = 0;
    }
 }
 
-static void LightController_DriverSpy_On(uint8 Id)
+static void LightController_DriverSpy_On(uint8 DriverSpyId)
 {
+   LightController_IdType LightControllerId =
+         LightController_DriverSpy.Self[DriverSpyId].PipConst->LightControllerId;
 
-   LightController_Spy_lSetEvent(Id, LIGHTCONTROLLER_STATE_ON);
-
+   LightController_Spy_lSetEvent(LightControllerId, LIGHTCONTROLLER_STATE_ON);
 }
 
-static void LightController_DriverSpy_Off(uint8 Id)
+static void LightController_DriverSpy_Off(uint8 DriverSpyId)
 {
+   LightController_IdType LightControllerId =
+         LightController_DriverSpy.Self[DriverSpyId].PipConst->LightControllerId;
 
-   LightController_Spy_lSetEvent(Id, LIGHTCONTROLLER_STATE_OFF);
+   LightController_Spy_lSetEvent(LightControllerId, LIGHTCONTROLLER_STATE_OFF);
 }
 
 
 static LightController_DriverSpyEventType LightController_DriverSpy_GetEvent(uint16 EventNumber)
 {
-   return (LightController_Spy.Data[EventNumber].Given);
+   return (LightController_DriverSpy.Sm.Given[EventNumber]);
 }
 
 
-void LightController_DriverSpy_CheckEvent(LightController_DriverSpyEventType const * const ExpectedEvent, uint16 NumberGivenEvent)
+void LightController_DriverSpy_CheckEvent(const LightController_DriverSpyEventType * const ExpectedEvent, const uint16 NumberGivenEvent)
 {
    LightController_DriverSpyEventType Given;
    Given = LightController_DriverSpy_GetEvent(NumberGivenEvent);
 
-   if (LightController_Spy.Sm.LastCheckedEvent < NumberGivenEvent)
+   if (LightController_DriverSpy.Sm.LastCheckedEvent < NumberGivenEvent)
    {
-      LightController_Spy.Sm.LastCheckedEvent = NumberGivenEvent;
+      LightController_DriverSpy.Sm.LastCheckedEvent = NumberGivenEvent;
    }
 
-   TEST_ASSERT_EQUAL(ExpectedEvent->Id, Given.Id);
+   TEST_ASSERT_EQUAL(ExpectedEvent->LightControllerId, Given.LightControllerId);
    TEST_ASSERT_EQUAL(ExpectedEvent->State, Given.State);
    TEST_ASSERT_EQUAL(ExpectedEvent->Time.Day, Given.Time.Day);
    TEST_ASSERT_EQUAL(ExpectedEvent->Time.Minute, Given.Time.Minute);
@@ -141,7 +166,7 @@ void LightController_DriverSpy_CheckEvent(LightController_DriverSpyEventType con
 
 void LightController_DriverSpy_CheckDefault(void)
 {
-   uint16 NumberEvent = LightController_Spy.Sm.LastCheckedEvent + 1;
+   uint16 NumberEvent = LightController_DriverSpy.Sm.LastCheckedEvent + 1;
 
    LightController_DriverSpy_CheckEvent(&Default, NumberEvent);
 }

@@ -11,11 +11,11 @@
 #include "LightController_DriverSpy.h"
 #include "TimeService_Os_Mock.h"
 #include "mock_TimeService_Os.h"
+#include "LightController_DriverCount.h"
 
 
 TEST_FILE("LightController.c")
 TEST_FILE("TimeService.c")
-TEST_FILE("LightController_DriverCount.c")
 
 
 LightScheduler_SpConstType const LightScheduler_FakeMConfig =
@@ -40,6 +40,9 @@ void setUp(void)
 void tearDown(void)
 {
    LightController_DriverSpy_CheckDefault();
+
+   LightController_DriverSpy_DeInit();
+   LightController_DriverCount_DeInit();
 }
 
 
@@ -56,7 +59,7 @@ void test_LightSchedulerRandomize_TurnsOnEarly(void)
 
    LightScheduler_Test_RunUntil(TIMESERVICE_WEDNESDAY, MinuteToTest + 1);
 
-   Expected.Id = LIGHTCONTROLLER_BEDROOM;
+   Expected.LightControllerId = LIGHTCONTROLLER_BEDROOM;
    Expected.State = LIGHTCONTROLLER_STATE_ON;
    Expected.Time.Day = TIMESERVICE_MONDAY;
    Expected.Time.Minute = MinuteToTest - 10;
@@ -83,7 +86,7 @@ void test_LightSchedulerRandomize_TurnsOnOnlyOnceADayDecrementTime(void)
 
    LightScheduler_Test_RunUntil(TIMESERVICE_WEDNESDAY, MinuteToTest - 10 + 1);
 
-   Expected.Id = LIGHTCONTROLLER_BEDROOM;
+   Expected.LightControllerId = LIGHTCONTROLLER_BEDROOM;
    Expected.State = LIGHTCONTROLLER_STATE_ON;
    Expected.Time.Day = TIMESERVICE_MONDAY;
    Expected.Time.Minute = MinuteToTest + 10;
@@ -111,7 +114,7 @@ void test_LightSchedulerRandomize_TurnsOnOnlyOnceADayIncrementTime(void)
 
    LightScheduler_Test_RunUntil(TIMESERVICE_WEDNESDAY, MinuteToTest + 11);
 
-   Expected.Id = LIGHTCONTROLLER_BEDROOM;
+   Expected.LightControllerId = LIGHTCONTROLLER_BEDROOM;
    Expected.State = LIGHTCONTROLLER_STATE_ON;
    Expected.Time.Day = TIMESERVICE_MONDAY;
    Expected.Time.Minute = MinuteToTest - 10;
@@ -138,7 +141,7 @@ void test_LightSchedulerRandomize_RandomizeAtMidnight(void)
 
    LightScheduler_Test_RunUntil(TIMESERVICE_THURSDAY, 10);
 
-   Expected.Id = LIGHTCONTROLLER_BEDROOM;
+   Expected.LightControllerId = LIGHTCONTROLLER_BEDROOM;
    Expected.State = LIGHTCONTROLLER_STATE_ON;
    Expected.Time.Day = TIMESERVICE_MONDAY;
    Expected.Time.Minute = MinuteToTest - 10;

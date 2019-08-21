@@ -40,7 +40,8 @@ void setUp(void)
 
 void tearDown(void)
 {
-
+   LightController_DriverSpy_DeInit();
+   LightController_DriverCount_DeInit();
 }
 
 
@@ -50,7 +51,7 @@ void test_LightController_RememberTheLastLightIdControlled(void)
 
    LightController_On(LIGHTCONTROLLER_BATHROOM);
 
-   Expected.Id = LIGHTCONTROLLER_BATHROOM;
+   Expected.LightControllerId = LIGHTCONTROLLER_BATHROOM;
    LightController_DriverSpy_CheckEvent(&Expected, 0);
 }
 
@@ -58,7 +59,7 @@ void test_LightController_RememberTheLastLightIdControlled(void)
 void test_LightController_TurnOnDifferentDriverTypes(void)
 {
 
-   LightController_SetDriver(LIGHTCONTROLLER_KITCHEN, &LightControllerCount_Config);
+   LightController_SetDriver(LIGHTCONTROLLER_KITCHEN, &LightController_DriverCount_Config);
 
    LightController_On(LIGHTCONTROLLER_KITCHEN);
    LightController_Off(LIGHTCONTROLLER_KITCHEN);
@@ -68,7 +69,7 @@ void test_LightController_TurnOnDifferentDriverTypes(void)
 
    TEST_ASSERT_EQUAL_UINT16(2, LightController_DriverCount_GetEventCntr());
 
-   Expected.Id = LIGHTCONTROLLER_LIVINGROOM;
+   Expected.LightControllerId = LIGHTCONTROLLER_LIVINGROOM;
    LightController_DriverSpy_CheckEvent(&Expected, 0);
 }
 

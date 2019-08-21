@@ -9,8 +9,9 @@
 #define LIGHTCONTROLLER_DRIVER_H_
 
 #include "Std_Types.h"
+#include "LightController.h"
 
-struct LightController_InterfaceType_tag
+struct LightController_InterfaceTypeTag
 {
    void (*DriverOn)(uint8 DriverId);
    void (*DriverOff)(uint8 DriverId);
